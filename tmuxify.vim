@@ -6,13 +6,13 @@
 "
 " The following functions and variables can be used by other plugins.
 "
-" External functions:
+" Functions:
 "
 "   tmuxify#create_pane()
 "   tmuxify#kill_pane()
 "   tmuxify#send_to_pane()
 "
-" External variables:
+" Variables:
 "
 "   g:loaded_tmuxify
 "   g:tmuxify_default_send_action
