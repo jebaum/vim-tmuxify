@@ -1,25 +1,23 @@
-vim-tmuxify
-===========
+# vim-tmuxify
 
-Description
------------
+This is a shiny Vim plugin for handling tmux panes. It's implemented as a single
+file library and can be used as framework for other plugins.
 
-    This is a shiny Vim plugin for handling tmux panes. It's implemented as a
-    single file library and can be used as framework for other plugins.
+Limits exist only in your mind! Vim on!
 
-    Limits exist only in your mind! Vim on!
+## Installation
 
-Installation
-------------
+Just put the file into autoload/.
 
-    Just put the file into autoload/.
+## Usage
 
-Usage
------
+`:h Tmuxify`
 
-    :h Tmuxify
+## Author
 
-Author
-------
+Marco Hinz `<mhinz@spline.de>`
 
-    Marco Hinz <mhinz@spline.de>
+## License
+
+Copyright © 2012 Marco Hinz. Distributed under the same terms as Vim itself (see
+`:help license`).
