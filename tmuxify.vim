@@ -17,6 +17,7 @@
 "   g:loaded_tmuxify
 "   g:tmuxify_default_send_action
 "   g:tmuxify_default_start_program
+"   g:tmuxify_split_win_size
 "   g:tmuxify_vert_split
 "
 "=============================================================================="
