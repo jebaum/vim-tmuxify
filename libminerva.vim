@@ -29,12 +29,17 @@ function! libminerva#create_pane() abort
           \ g:minerva_interpreter . "' C-m")
   endif
 
-  autocmd! VimLeave * call libminerva#kill_pane()
+  augroup tmuxify
+    autocmd!
+    autocmd VimLeave * call libminerva#kill_pane()
+  augroup END
 endfunction
 
 
 function! libminerva#kill_pane() abort
   call system('tmux kill-pane -t ' . s:last_pane)
+  autocmd! tmuxify VimLeave *
+  augroup! tmuxify
 endfunction
 
 
