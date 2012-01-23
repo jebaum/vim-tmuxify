@@ -10,6 +10,7 @@
 "
 "   tmuxify#create_pane()
 "   tmuxify#kill_pane()
+"   tmuxify#perm_pane
 "   tmuxify#run_program_in_pane
 "   tmuxify#send_to_pane()
 "
@@ -46,7 +47,12 @@ function! tmuxify#create_pane(...) abort
   call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
         \ g:tmuxify_split_win_size)
 
-  let s:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
+  if exists('s:perm_target_pane')
+    s:perm_target_pane = tmuxify#perm_pane()
+    let s:target_pane = s:perm_target_pane
+  else
+    let s:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
+  endif
 
   if !exists('a:1') && exists('g:tmuxify_default_start_program')
     call system("tmux send-keys -t " .
@@ -108,6 +114,19 @@ function! tmuxify#send_to_pane(...) abort
   endif
 
   call system("tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m")
+endfunction
+
+" perm_pane() {{{1
+function! tmuxify#perm_pane(...)
+  if exists('a:1')
+    return a:1
+  endif
+
+  let l:session = input('Session: ')
+  let l:window  = input('Window: ')
+  let l:pane    = input('Pane: ')
+  
+  return l:session . ':' .  l:window . ':' . l:pane
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
