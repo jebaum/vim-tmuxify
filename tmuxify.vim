@@ -38,7 +38,7 @@ function! tmuxify#create_pane(...) abort
 
   let s:run_mode = 0
 
-  if exists('s:last_pane') || s:run_mode == 1
+  if exists('s:target_pane') || s:run_mode == 1
     call tmuxify#kill_pane()
     let s:run_mode = 0
   endif
@@ -46,13 +46,14 @@ function! tmuxify#create_pane(...) abort
   call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
         \ g:tmuxify_split_win_size)
 
-  let s:last_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
+  let s:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
 
   if !exists('a:1') && exists('g:tmuxify_default_start_program')
     call system("tmux send-keys -t " .
-          \s:last_pane .
+          \s:target_pane .
           \" 'clear; " .
-          \ g:tmuxify_default_start_program . "' C-m")
+          \ g:tmuxify_default_start_program .
+          \ "' C-m")
   endif
 
   augroup tmuxify
@@ -63,12 +64,12 @@ endfunction
 
 " kill_pane() {{{1
 function! tmuxify#kill_pane() abort
-  if !exists('s:last_pane')
+  if !exists('s:target_pane')
     return
   endif
 
-  call system('tmux kill-pane -t ' . s:last_pane)
-  unlet s:last_pane
+  call system('tmux kill-pane -t ' . s:target_pane)
+  unlet s:target_pane
 
   autocmd! tmuxify VimLeave *
   augroup! tmuxify
@@ -76,13 +77,13 @@ endfunction
 
 " run_program_in_pane() {{{1
 function! tmuxify#run_program_in_pane(path)
-  if exists('s:last_pane')
+  if exists('s:target_pane')
     call tmuxify#kill_pane()
   endif
   call tmuxify#create_pane('rocknroll')
   let s:run_mode = 1
   call system("tmux send-keys -t " .
-        \ s:last_pane .
+        \ s:target_pane .
         \ " 'clear; " .
         \ g:tmuxify_default_start_program .
         \ " " .
@@ -92,7 +93,7 @@ endfunction
 
 " send_to_pane() {{{1
 function! tmuxify#send_to_pane(...) abort
-  if !exists('s:last_pane') || s:run_mode == 1
+  if !exists('s:target_pane') || s:run_mode == 1
     call tmuxify#create_pane()
   endif
 
@@ -106,7 +107,7 @@ function! tmuxify#send_to_pane(...) abort
     endif
   endif
 
-  call system("tmux send-keys -t " . s:last_pane . " '" . l:action . "' C-m")
+  call system("tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m")
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
