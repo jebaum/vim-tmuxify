@@ -37,7 +37,13 @@ endfunction
 
 
 function! libminerva#kill_pane() abort
+  if !exists('s:last_pane')
+    return
+  endif
+
   call system('tmux kill-pane -t ' . s:last_pane)
+  unlet s:last_pane
+
   autocmd! tmuxify VimLeave *
   augroup! tmuxify
 endfunction
