@@ -29,10 +29,17 @@ endif
 let g:loaded_tmuxify = 1
 
 " create_pane() {{{1
-function! tmuxify#create_pane() abort
+function! tmuxify#create_pane(...) abort
   if !exists('$TMUX')
     echo "tmuxify: This Vim is not running in a tmux session!"
     return
+  endif
+
+  let s:run_mode = 0
+
+  if exists('s:last_pane') || s:run_mode == 1
+    call tmuxify#kill_pane()
+    let s:run_mode = 0
   endif
 
   call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
@@ -40,8 +47,10 @@ function! tmuxify#create_pane() abort
 
   let s:last_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
 
-  if exists('g:tmuxify_default_start_program')
-    call system("tmux send-keys -t " . s:last_pane . " '" .
+  if !exists('a:1') && exists('g:tmuxify_default_start_program')
+    call system("tmux send-keys -t " .
+          \s:last_pane .
+          \" 'clear; " .
           \ g:tmuxify_default_start_program . "' C-m")
   endif
 
@@ -64,9 +73,25 @@ function! tmuxify#kill_pane() abort
   augroup! tmuxify
 endfunction
 
+" run_program_in_pane() {{{1
+function! tmuxify#run_program_in_pane(path)
+  if exists('s:last_pane')
+    call tmuxify#kill_pane()
+  endif
+  call tmuxify#create_pane('rocknroll')
+  let s:run_mode = 1
+  call system("tmux send-keys -t " .
+        \ s:last_pane .
+        \ " 'clear; " .
+        \ g:tmuxify_default_start_program .
+        \ " " .
+        \ a:path .
+        \ "' C-m")
+endfunction
+
 " send_to_pane() {{{1
 function! tmuxify#send_to_pane(...) abort
-  if !exists('s:last_pane')
+  if !exists('s:last_pane') || s:run_mode == 1
     call tmuxify#create_pane()
   endif
 
