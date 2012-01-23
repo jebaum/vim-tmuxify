@@ -1,42 +1,57 @@
 "=============================================================================="
-" URL:         https://github.com/mhinz/vim-javascript-minerva
+" URL:         https://github.com/mhinz/vim-tmuxify
 " Author:      Marco Hinz <mhinz@spline.de>
 " Maintainer:  Marco Hinz <mhinz@spline.de>
 "=============================================================================="
+"
+" The following functions and variables can be used by other plugins.
+"
+" External functions:
+"
+"   tmuxify#create_pane()
+"   tmuxify#kill_pane()
+"   tmuxify#send_to_pane()
+"
+" External variables:
+"
+"   g:loaded_tmuxify
+"   g:tmuxify_default_send_action
+"   g:tmuxify_default_start_program
+"   g:tmuxify_vert_split
+"
+"=============================================================================="
 
-" init {{{1
-
-if exists('g:loaded_libminerva') || &cp
+" loaded? {{{1
+if exists('g:loaded_tmuxify') || &cp
   finish
 endif
-let g:loaded_libminerva = 1
+let g:loaded_tmuxify = 1
 
-" functions {{{1
-
-function! libminerva#create_pane() abort
+" create_pane() {{{1
+function! tmuxify#create_pane() abort
   if !exists('$TMUX')
-    echo "minerva: This Vim is not running in a tmux session!"
+    echo "tmuxify: This Vim is not running in a tmux session!"
     return
   endif
 
-  call system("tmux split-window -d " . g:minerva_vert_split . " -l " .
-        \ g:minerva_split_win_size)
+  call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
+        \ g:tmuxify_split_win_size)
 
   let s:last_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
 
-  if exists('g:minerva_interpreter')
+  if exists('g:tmuxify_default_start_program')
     call system("tmux send-keys -t " . s:last_pane . " '" .
-          \ g:minerva_interpreter . "' C-m")
+          \ g:tmuxify_default_start_program . "' C-m")
   endif
 
   augroup tmuxify
     autocmd!
-    autocmd VimLeave * call libminerva#kill_pane()
+    autocmd VimLeave * call tmuxify#kill_pane()
   augroup END
 endfunction
 
-
-function! libminerva#kill_pane() abort
+" kill_pane() {{{1
+function! tmuxify#kill_pane() abort
   if !exists('s:last_pane')
     return
   endif
@@ -48,19 +63,19 @@ function! libminerva#kill_pane() abort
   augroup! tmuxify
 endfunction
 
-
-function! libminerva#send_to_pane(...) abort
+" send_to_pane() {{{1
+function! tmuxify#send_to_pane(...) abort
   if !exists('s:last_pane')
-    call libminerva#create_pane()
+    call tmuxify#create_pane()
   endif
 
   if exists('a:1')
     let l:action = a:1
   else
-    if exists('g:minerva_default_send_action')
-      let l:action = g:minerva_default_send_action
+    if exists('g:tmuxify_default_send_action')
+      let l:action = g:tmuxify_default_send_action
     else
-      let l:action = input('Minerva> ')
+      let l:action = input('tmuxify> ')
     endif
   endif
 
