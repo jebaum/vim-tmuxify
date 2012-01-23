@@ -10,6 +10,7 @@
 "
 "   tmuxify#create_pane()
 "   tmuxify#kill_pane()
+"   tmuxify#run_program_in_pane
 "   tmuxify#send_to_pane()
 "
 " Variables:
