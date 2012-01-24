@@ -11,11 +11,11 @@
 "   tmuxify#complete_panes()
 "   tmuxify#complete_sessions
 "   tmuxify#complete_windows()
-"   tmuxify#create_pane()
-"   tmuxify#kill_pane()
-"   tmuxify#perm_pane()
-"   tmuxify#run_program_in_pane()
-"   tmuxify#send_to_pane()
+"   tmuxify#pane_create()
+"   tmuxify#pane_kill()
+"   tmuxify#pane_run()
+"   tmuxify#pane_send()
+"   tmuxify#pane_set()
 "
 " Variables:
 "
@@ -33,7 +33,7 @@ if exists('g:loaded_tmuxify') || &cp
 endif
 let g:loaded_tmuxify = 1
 
-let b:run_mode = 0
+let b:tmuxified = 0
 
 " complete_sessions() {{{1
 function! tmuxify#complete_sessions(A, L, P)
@@ -51,93 +51,62 @@ function! tmuxify#complete_panes(A, L, P)
         \' | cut -d: -f1')
 endfunction
 
-" create_pane() {{{1
-function! tmuxify#create_pane(...) abort
+" pane_create() {{{1
+function! tmuxify#pane_create(...) abort
   if !exists('$TMUX')
     echo "tmuxify: This Vim is not running in a tmux session!"
     return
-  endif
-
-  if exists('b:target_pane') || b:run_mode == 1
-    call tmuxify#kill_pane()
-    let b:run_mode = 0
   endif
 
   call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
         \ g:tmuxify_split_win_size)
 
-  if exists('b:perm_target_pane')
-    let b:target_pane = b:perm_target_pane
-  else
-    let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
-  endif
+  let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
+  let b:tmuxified   = 1
 
-  if !exists('a:1') && exists('g:tmuxify_default_start_program')
-    call system("tmux send-keys -t " .
-          \b:target_pane .
-          \" 'clear; " .
-          \ g:tmuxify_default_start_program .
-          \ "' C-m")
+  if exists('a:1')
+    call tmuxify#pane_send(a:1)
   endif
 
   augroup tmuxify
     autocmd!
-    autocmd VimLeave * call tmuxify#kill_pane()
+    autocmd VimLeave * call tmuxify#pane_kill()
   augroup END
 endfunction
 
-" kill_pane() {{{1
-function! tmuxify#kill_pane() abort
-  if !exists('$TMUX')
-    echo "tmuxify: This Vim is not running in a tmux session!"
-    return
-  endif
-
-  if !exists('b:target_pane')
+" pane_kill() {{{1
+function! tmuxify#pane_kill() abort
+  if b:tmuxified == 0
     return
   endif
 
   call system('tmux kill-pane -t ' . b:target_pane)
   unlet b:target_pane
+  let b:tmuxified = 0
 
   autocmd! tmuxify VimLeave *
   augroup! tmuxify
 endfunction
 
-" run_program_in_pane() {{{1
-function! tmuxify#run_program_in_pane(path)
-  if !exists('$TMUX')
-    echo "tmuxify: This Vim is not running in a tmux session!"
-    return
+" pane_run() {{{1
+function! tmuxify#pane_run(path)
+  if b:tmuxified == 1
+    call tmuxify#pane_kill()
   endif
 
-  if exists('b:target_pane')
-    call tmuxify#kill_pane()
-  endif
-  call tmuxify#create_pane('rocknroll')
-  let b:run_mode = 1
-  call system("tmux send-keys -t " .
-        \ b:target_pane .
-        \ " 'clear; " .
+  call tmuxify#pane_create()
+  call tmuxify#pane_send('clear; ' .
         \ g:tmuxify_default_start_program .
-        \ " " .
+        \ ' ' .
         \ a:path .
-        \ "' C-m")
+        \ '; ' .
+        \ g:tmuxify_default_start_program)
 endfunction
 
-" send_to_pane() {{{1
-function! tmuxify#send_to_pane(...) abort
-  if !exists('$TMUX')
-    echo "tmuxify: This Vim is not running in a tmux session!"
+" pane_send() {{{1
+function! tmuxify#pane_send(...) abort
+  if b:tmuxified == 0
     return
-  endif
-
-  if !exists('b:target_pane') || b:run_mode == 1
-    call tmuxify#create_pane()
-  endif
-
-  if exists('b:perm_target_pane')
-    let b:target_pane = b:perm_target_pane
   endif
 
   if exists('a:1')
@@ -153,22 +122,17 @@ function! tmuxify#send_to_pane(...) abort
   call system("tmux send-keys -t " . b:target_pane . " '" . l:action . "' C-m")
 endfunction
 
-" perm_pane() {{{1
-function! tmuxify#perm_pane(...)
+" pane_set() {{{1
+function! tmuxify#pane_set()
   if !exists('$TMUX')
     echo "tmuxify: This Vim is not running in a tmux session!"
     return
   endif
 
-  if exists('a:1')
-    let b:perm_target_pane = a:1
-  endif
-
-  let b:sessions = input('Session: ', '', 'custom,tmuxify#complete_sessions')
-  let b:windows  = input('Window: ', '', 'custom,tmuxify#complete_windows')
-  let b:panes    = input('Pane: ', '', 'custom,tmuxify#complete_panes')
-
-  let b:perm_target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
+  let b:sessions    = input('Session: ', '', 'custom,tmuxify#complete_sessions')
+  let b:windows     = input('Window: ', '', 'custom,tmuxify#complete_windows')
+  let b:panes       = input('Pane: ', '', 'custom,tmuxify#complete_panes')
+  let b:target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
