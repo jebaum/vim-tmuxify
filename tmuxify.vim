@@ -150,7 +150,7 @@ function! tmuxify#send_to_pane(...) abort
     endif
   endif
 
-  call system("tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m"
+  call system("tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m")
 endfunction
 
 " perm_pane() {{{1
