@@ -88,6 +88,11 @@ endfunction
 
 " kill_pane() {{{1
 function! tmuxify#kill_pane() abort
+  if !exists('$TMUX')
+    echo "tmuxify: This Vim is not running in a tmux session!"
+    return
+  endif
+
   if !exists('s:target_pane')
     return
   endif
@@ -101,6 +106,11 @@ endfunction
 
 " run_program_in_pane() {{{1
 function! tmuxify#run_program_in_pane(path)
+  if !exists('$TMUX')
+    echo "tmuxify: This Vim is not running in a tmux session!"
+    return
+  endif
+
   if exists('s:target_pane')
     call tmuxify#kill_pane()
   endif
@@ -117,6 +127,11 @@ endfunction
 
 " send_to_pane() {{{1
 function! tmuxify#send_to_pane(...) abort
+  if !exists('$TMUX')
+    echo "tmuxify: This Vim is not running in a tmux session!"
+    return
+  endif
+
   if !exists('s:target_pane') || s:run_mode == 1
     call tmuxify#create_pane()
   endif
@@ -135,14 +150,16 @@ function! tmuxify#send_to_pane(...) abort
     endif
   endif
 
-  " TODO: 'target-pane' => 0:0:0 not working..
-  let l:tmpi = "tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m"
-  call system(l:tmpi)
-  echo l:tmpi
+  call system("tmux send-keys -t " . s:target_pane . " '" . l:action . "' C-m"
 endfunction
 
 " perm_pane() {{{1
 function! tmuxify#perm_pane(...)
+  if !exists('$TMUX')
+    echo "tmuxify: This Vim is not running in a tmux session!"
+    return
+  endif
+
   if exists('a:1')
     let s:perm_target_pane = a:1
   endif
