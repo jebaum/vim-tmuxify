@@ -17,6 +17,11 @@ Just put the file into autoload/.
 
 Marco Hinz `<mhinz@spline.de>`
 
+## Endorse me
+
+[![endorse](http://api.coderwall.com/mhinz/endorse.png)]
+(http://coderwall.com/mhinz)
+
 ## License
 
 Copyright © 2012 Marco Hinz. Distributed under the same terms as Vim itself (see
