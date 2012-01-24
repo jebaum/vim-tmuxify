@@ -168,7 +168,7 @@ function! tmuxify#perm_pane(...)
   let s:windows  = input('Window: ', '', 'custom,tmuxify#complete_windows')
   let s:panes    = input('Pane: ', '', 'custom,tmuxify#complete_panes')
 
-  let s:perm_target_pane = s:sessions . ':' .  s:windows . ':' . s:panes
+  let s:perm_target_pane = s:sessions . ':' .  s:windows . '.' . s:panes
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
