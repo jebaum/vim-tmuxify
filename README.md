@@ -7,7 +7,9 @@ Limits exist only in your mind! Vim on!
 
 ## Installation
 
-Just put the file into autoload/.
+Put the file into ~/.vim/autoload/.
+
+Or just clone it into ~/.vim/bundle/.
 
 ## Usage
 
