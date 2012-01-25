@@ -20,8 +20,8 @@
 " Variables:
 "
 "   g:loaded_tmuxify
-"   g:tmuxify_run_program
 "   g:tmuxify_pane_height
+"   g:tmuxify_run_program
 "   g:tmuxify_vert_split
 "
 "=============================================================================="
@@ -33,6 +33,11 @@ endif
 let g:loaded_tmuxify = 1
 
 let b:tmuxified = 0
+
+" SID() {{{1
+function s:SID()
+  return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
+endfun
 
 " complete_sessions() {{{1
 function! s:complete_sessions(A, L, P)
@@ -124,9 +129,13 @@ function! tmuxify#pane_set()
     return
   endif
 
-  let b:sessions    = input('Session: ', '', 'custom,tmuxify#complete_sessions')
-  let b:windows     = input('Window: ', '', 'custom,tmuxify#complete_windows')
-  let b:panes       = input('Pane: ', '', 'custom,tmuxify#complete_panes')
+  let b:sessions    = input('Session: ', '', 'custom,<SNR>' . s:SID() .
+        \ '_complete_sessions')
+  let b:windows     = input('Window: ', '', 'custom,<SNR>' . s:SID() .
+        \ '_complete_windows')
+  let b:panes       = input('Pane: ', '', 'custom,<SNR>' . s:SID() .
+        \'_complete_panes')
+
   let b:target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
 endfunction
 
