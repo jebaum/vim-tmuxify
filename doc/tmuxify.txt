@@ -1,0 +1,138 @@
+*tmuxify.txt*                                      Handling panes like a boss.
+*tmuxify*
+
+            __                                     ___
+           /\ \__                            __  /'___\
+           \ \ ,_\   ___ ___   __  __  __  _/\_\/\ \__/  __  __
+            \ \ \/ /' __` __`\/\ \/\ \/\ \/'\/\ \ \ ,__\/\ \/\ \
+             \ \ \_/\ \/\ \/\ \ \ \_\ \/>  </\ \ \ \ \_/\ \ \_\ \
+              \ \__\ \_\ \_\ \_\ \____//\_/\_\\ \_\ \_\  \/`____ \
+               \/__/\/_/\/_/\/_/\/___/ \//\/_/ \/_/\/_/   `/___/> \
+                                                             /\___/
+                                                             \/__/
+
+
+                              Reference Manual~
+
+
+==============================================================================
+CONTENTS                                                    *tmuxify-contents*
+
+    1.Intro..........................................|tmuxify-intro|
+    2.Usage..........................................|tmuxify-usage|
+    3.Options........................................|tmuxify-options|
+    4.Functions......................................|tmuxify-functions|
+    5.About..........................................|tmuxify-about|
+    6.Credits........................................|tmuxify-credits|
+    7.License........................................|tmuxify-license|
+
+
+==============================================================================
+1. Intro                                                       *tmuxify-intro*
+
+Tmuxify is a pretty lightweight library which other plugins can built on. Its
+main purpose is to provide an API for handling tmux panes.
+
+You can open and close panes, set a specifc pane to work with, send input to a
+pane, send the visual selection to the pane, opening a pane and compile or
+execute the file your current buffer is holding and much, much more!
+
+Its main use case is to provide a set of basic functions and variables which
+can by used by other scripts to build more filetype-specific plugins. It is
+optimizing your edit, compile, run cycle.
+
+
+==============================================================================
+2. Usage                                                       *tmuxify-usage*
+
+Basically plugin authors should just play around with the given functions and
+variables and trying to come up with some nice combinations and mapping of
+them.
+
+You can find an example of an JavaScript plugin based on tmuxify here:
+
+https://github.com/mhinz/vim-javascript-minerva
+
+
+==============================================================================
+3. Options                                                   *tmuxify-options*
+
+
+
+==============================================================================
+4. Functions                                               *tmuxify-functions*
+
+tmuxify#pane_create()                               *tmuxify-func-pane_create*
+
+Takes 1 optional argument.
+
+Creates a new pane. tmuxify will use its pane number to reference it from now
+on. If that number should ever change, because you were going wild with tmux'
+pane management, you would have to call |tmuxify-func-pane_set|.
+
+
+If a pane is created it starts a new shell. This function takes any shell
+input. It could be the interpreter for the language you write a plugin for.
+
+
+tmuxify#pane_kill()                                   *tmuxify-func-pane_kill*
+
+Takes no arguments.
+
+Just closes the tmuxified pane.
+
+
+tmuxify#pane_run()                                     *tmuxify-func-pane_run*
+
+Takes 1 argument.
+
+This function takes a path and uses |tmuxify-var-default_start_program|
+prepended by a 'clear'. Afterwards the default start program is called again.
+
+
+tmuxify#pane_send()                                   *tmuxify-func-pane_send*
+
+Takes 1 optional argument.
+
+If an argument is given, it will be sent to the tmuxified pane. If that is not
+the case and you haven't specified a default value using
+|tmuxify-var-default_send_action|, the function will prompt you for the input.
+
+
+tmuxify#pane_set()                                     *tmuxify-func-pane_set*
+
+Takes no arguments.
+
+Sets the pane to be tmuxified. It prompts the user for session, window and
+pane number providing tab completion for all three of them.
+
+
+==============================================================================
+5. About                                                       *tmuxify-about*
+
+The author of tmuxify is a lazy bum who somehow enjoys wasting time toying
+with Vim and especially VimL.
+
+You can usually find him in #vim on irc.freenode.org.
+
+For latest developments:
+
+https://github.com/mhinz
+
+Thank you for flying mhi airlines. Get the Vim on!
+
+
+==============================================================================
+6. Credits                                                   *tmuxify-credits*
+
+No one so far! Want to be the first? - You know where to find the repo.
+Do you accept the challenge? Fame and fortune to the glorious adventurers.
+
+
+==============================================================================
+7. Licence                                                   *tmuxify-license*
+
+Distributed under the same terms as Vim itself (see |:help license|).
+
+
+vim: tw=78
