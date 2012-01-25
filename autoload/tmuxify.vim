@@ -35,17 +35,17 @@ let g:loaded_tmuxify = 1
 let b:tmuxified = 0
 
 " complete_sessions() {{{1
-function! tmuxify#complete_sessions(A, L, P)
+function! s:complete_sessions(A, L, P)
   return system('tmux list-sessions | cut -d: -f1')
 endfunction
 
 " complete_windows() {{{1
-function! tmuxify#complete_windows(A, L, P)
+function! s:complete_windows(A, L, P)
   return system('tmux list-windows -t ' . b:sessions . ' | cut -d: -f1')
 endfunction
 
 " complete_panes() {{{1
-function! tmuxify#complete_panes(A, L, P)
+function! s:complete_panes(A, L, P)
   return system('tmux list-panes -t ' . b:sessions . ':' . b:windows .
         \' | cut -d: -f1')
 endfunction
