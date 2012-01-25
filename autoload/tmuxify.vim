@@ -32,22 +32,22 @@ let g:loaded_tmuxify = 1
 let b:tmuxified = 0
 
 " SID() {{{1
-function s:SID()
+function s:SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfun
 
 " complete_sessions() {{{1
-function! s:complete_sessions(A, L, P)
+function! s:complete_sessions(a, l, p) abort
   return system('tmux list-sessions | cut -d: -f1')
 endfunction
 
 " complete_windows() {{{1
-function! s:complete_windows(A, L, P)
+function! s:complete_windows(a, l, p) abort
   return system('tmux list-windows -t ' . b:sessions . ' | cut -d: -f1')
 endfunction
 
 " complete_panes() {{{1
-function! s:complete_panes(A, L, P)
+function! s:complete_panes(a, l, p) abort
   return system('tmux list-panes -t ' . b:sessions . ':' . b:windows .
         \' | cut -d: -f1')
 endfunction
