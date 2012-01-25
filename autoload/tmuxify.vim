@@ -20,9 +20,8 @@
 " Variables:
 "
 "   g:loaded_tmuxify
-"   g:tmuxify_default_send_action
-"   g:tmuxify_default_start_program
-"   g:tmuxify_split_win_size
+"   g:tmuxify_run_program
+"   g:tmuxify_pane_height
 "   g:tmuxify_vert_split
 "
 "=============================================================================="
@@ -59,7 +58,7 @@ function! tmuxify#pane_create(...) abort
   endif
 
   call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
-        \ g:tmuxify_split_win_size)
+        \ g:tmuxify_pane_height)
 
   let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
   let b:tmuxified   = 1
@@ -96,11 +95,11 @@ function! tmuxify#pane_run(path)
 
   call tmuxify#pane_create()
   call tmuxify#pane_send('clear; ' .
-        \ g:tmuxify_default_start_program .
+        \ g:tmuxify_run_program .
         \ ' ' .
         \ a:path .
         \ '; ' .
-        \ g:tmuxify_default_start_program)
+        \ g:tmuxify_run_program)
 endfunction
 
 " pane_send() {{{1
@@ -112,11 +111,7 @@ function! tmuxify#pane_send(...) abort
   if exists('a:1')
     let l:action = a:1
   else
-    if exists('g:tmuxify_default_send_action')
-      let l:action = g:tmuxify_default_send_action
-    else
-      let l:action = input('tmuxify> ')
-    endif
+    let l:action = input('tmuxify> ')
   endif
 
   call system("tmux send-keys -t " . b:target_pane . " '" . l:action . "' C-m")
