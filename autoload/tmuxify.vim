@@ -8,9 +8,6 @@
 "
 " Functions:
 "
-"   tmuxify#complete_panes()
-"   tmuxify#complete_sessions
-"   tmuxify#complete_windows()
 "   tmuxify#pane_create()
 "   tmuxify#pane_kill()
 "   tmuxify#pane_run()
@@ -55,6 +52,14 @@ function! s:complete_panes(A, L, P)
         \' | cut -d: -f1')
 endfunction
 
+" setup_exit_handler() {{{1
+function! s:setup_exit_handler()
+  augroup tmuxify
+    autocmd!
+    autocmd VimLeave * call tmuxify#pane_kill()
+  augroup END
+endfunction
+
 " pane_create() {{{1
 function! tmuxify#pane_create(...) abort
   if !exists('$TMUX')
@@ -62,7 +67,7 @@ function! tmuxify#pane_create(...) abort
     return
   endif
 
-  call system("tmux split-window -d " . g:tmuxify_vert_split . " -l " .
+  call system('tmux split-window -d ' . g:tmuxify_vert_split . ' -l ' .
         \ g:tmuxify_pane_height)
 
   let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
@@ -72,10 +77,7 @@ function! tmuxify#pane_create(...) abort
     call tmuxify#pane_send(a:1)
   endif
 
-  augroup tmuxify
-    autocmd!
-    autocmd VimLeave * call tmuxify#pane_kill()
-  augroup END
+  call <SID>setup_exit_handler()
 endfunction
 
 " pane_kill() {{{1
@@ -137,6 +139,9 @@ function! tmuxify#pane_set()
         \'_complete_panes')
 
   let b:target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
+  let b:tmuxified   = 1
+
+  call <SID>setup_exit_handler()
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
