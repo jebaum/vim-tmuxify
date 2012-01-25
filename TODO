@@ -1,8 +1,0 @@
-TODO
-====
-
-tmuxify uses global variables, so there should be always only one plugin using
-it at the same time. Otherwise you will get unpredictable errors due to
-namespace clashing.
-
-vim: tw=80
