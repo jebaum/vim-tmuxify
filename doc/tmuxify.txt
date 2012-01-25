@@ -46,10 +46,9 @@ optimizing your edit, compile, run cycle.
 2. Usage                                                       *tmuxify-usage*
 
 Basically plugin authors should just play around with the given functions and
-variables and trying to come up with some nice combinations and mapping of
-them.
+variables and trying to come up with nice combinations and mappings of them.
 
-You can find an example of an JavaScript plugin based on tmuxify here:
+You can find an example of a JavaScript plugin based on tmuxify here:
 
 https://github.com/mhinz/vim-javascript-minerva
 
@@ -57,6 +56,34 @@ https://github.com/mhinz/vim-javascript-minerva
 ==============================================================================
 3. Options                                                   *tmuxify-options*
 
+No variable is set by default. That is the task of the plugin author.
+
+
+                                                     *tmuxify-var-run_program*
+>
+    let g:tmuxify-var-run_program = 'python'
+<
+
+This program is used |tmuxify-func-pane_run|.
+
+
+                                                     *tmuxify-var-pane_height*
+>
+    let g:tmuxify-var-pane_height = 20
+<
+
+Controls the height of the tmuxified pane.
+
+
+                                                      *tmuxify-var-vert_split*
+>
+    let g:tmuxify_vert_split = '-v'
+<
+
+Possible values: '-v', '-h'
+
+The pane of Vim and the to be tmuxified pane will be split horizontal or
+vertical.
 
 
 ==============================================================================
@@ -113,7 +140,7 @@ pane number providing tab completion for all three of them.
 The author of tmuxify is a lazy bum who somehow enjoys wasting time toying
 with Vim and especially VimL.
 
-You can usually find him in #vim on irc.freenode.org.
+You can usually find him as mhi^ in #vim on irc.freenode.org.
 
 For latest developments:
 
