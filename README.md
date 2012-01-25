@@ -11,7 +11,7 @@ Just put the file into autoload/.
 
 ## Usage
 
-`:h Tmuxify`
+`:h tmuxify`
 
 ## Author
 
