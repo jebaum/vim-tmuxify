@@ -63,7 +63,7 @@ endfunction
 " pane_create() {{{1
 function! tmuxify#pane_create(...) abort
   if !exists('$TMUX')
-    echo "tmuxify: This Vim is not running in a tmux session!"
+    echo 'tmuxify: This Vim is not running in a tmux session!'
     return
   endif
 
@@ -127,7 +127,7 @@ endfunction
 " pane_set() {{{1
 function! tmuxify#pane_set()
   if !exists('$TMUX')
-    echo "tmuxify: This Vim is not running in a tmux session!"
+    echo 'tmuxify: This Vim is not running in a tmux session!'
     return
   endif
 
