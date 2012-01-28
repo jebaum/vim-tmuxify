@@ -62,8 +62,10 @@ endfunction
 
 " pane_create() {{{1
 function! tmuxify#pane_create(...) abort
-  if !exists('$TMUX')
-    echo 'tmuxify: This Vim is not running in a tmux session!'
+  if b:tmuxified == 1
+    if !exists('$TMUX')
+      echo 'tmuxify: This Vim is not running in a tmux session!'
+    endif
     return
   endif
 
@@ -101,6 +103,7 @@ function! tmuxify#pane_run(path, ...)
   endif
 
   call tmuxify#pane_create()
+  let b:tmuxified = 1
 
   let l:action = 'clear; ' . g:tmuxify_start_program . ' ' . a:path
 
