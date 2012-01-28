@@ -18,7 +18,7 @@
 "
 "   g:loaded_tmuxify
 "   g:tmuxify_pane_height
-"   g:tmuxify_run_program
+"   g:tmuxify_start_program
 "   g:tmuxify_vert_split
 "
 "=============================================================================="
@@ -95,18 +95,20 @@ function! tmuxify#pane_kill() abort
 endfunction
 
 " pane_run() {{{1
-function! tmuxify#pane_run(path)
+function! tmuxify#pane_run(path, ...)
   if b:tmuxified == 1
     call tmuxify#pane_kill()
   endif
 
   call tmuxify#pane_create()
-  call tmuxify#pane_send('clear; ' .
-        \ g:tmuxify_run_program .
-        \ ' ' .
-        \ a:path .
-        \ '; ' .
-        \ g:tmuxify_run_program)
+
+  let l:action = 'clear; ' . g:tmuxify_start_program . ' ' . a:path
+
+  if exists('a:1')
+    let l:action = l:action . '; ' . a:1
+  endif
+
+  call tmuxify#pane_send(l:action)
 endfunction
 
 " pane_send() {{{1
@@ -121,7 +123,7 @@ function! tmuxify#pane_send(...) abort
     let l:action = input('tmuxify> ')
   endif
 
-  call system("tmux send-keys -t " . b:target_pane . " '" . l:action . "' C-m")
+  call system('tmux send-keys -t ' . b:target_pane . ' ' . shellescape(l:action) . ' C-m')
 endfunction
 
 " pane_set() {{{1
@@ -131,11 +133,11 @@ function! tmuxify#pane_set()
     return
   endif
 
-  let b:sessions    = input('Session: ', '', 'custom,<SNR>' . s:SID() .
+  let b:sessions = input('Session: ', '', 'custom,<SNR>' . s:SID() .
         \ '_complete_sessions')
-  let b:windows     = input('Window: ', '', 'custom,<SNR>' . s:SID() .
+  let b:windows = input('Window: ', '', 'custom,<SNR>' . s:SID() .
         \ '_complete_windows')
-  let b:panes       = input('Pane: ', '', 'custom,<SNR>' . s:SID() .
+  let b:panes = input('Pane: ', '', 'custom,<SNR>' . s:SID() .
         \'_complete_panes')
 
   let b:target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
