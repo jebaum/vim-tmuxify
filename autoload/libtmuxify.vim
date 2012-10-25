@@ -4,28 +4,12 @@
 " Maintainer:  Marco Hinz <mhi@codebro.de>
 "=============================================================================="
 
-" loaded?  {{{1
-if exists('g:loaded_tmuxify') || &cp
+if exists('g:loaded_libtmuxify') || &cp
   finish
 endif
+let g:loaded_libtmuxify = 1
 
-let g:loaded_tmuxify = 1
-let b:tmuxified      = 0
-
-" Defaults  {{{1
-if !exists('g:tmuxify_start_program')
-  let g:tmuxify_start_program = '$SHELL'
-endif
-
-" '-h' for horizontal split window
-" '-v' for vertical split window
-if !exists('g:tmuxify_vert_split')
-  let g:tmuxify_vert_split = '-v'
-endif
-
-if !exists('g:tmuxify_pane_height')
-  let g:tmuxify_pane_height = '16'
-endif
+let b:tmuxified = 0
 
 " SID() {{{1
 function s:SID() abort
@@ -52,12 +36,12 @@ endfunction
 function! s:setup_exit_handler()
   augroup tmuxify
     autocmd!
-    autocmd VimLeave * call tmuxify#pane_kill()
+    autocmd VimLeave * call libtmuxify#pane_kill()
   augroup END
 endfunction
 
 " pane_create() {{{1
-function! tmuxify#pane_create(...) abort
+function! libtmuxify#pane_create(...) abort
   if b:tmuxified == 1
     if !exists('$TMUX')
       echo 'tmuxify: This Vim is not running in a tmux session!'
@@ -72,14 +56,14 @@ function! tmuxify#pane_create(...) abort
   let b:tmuxified   = 1
 
   if exists('a:1')
-    call tmuxify#pane_send(a:1)
+    call libtmuxify#pane_send(a:1)
   endif
 
   call <SID>setup_exit_handler()
 endfunction
 
 " pane_kill() {{{1
-function! tmuxify#pane_kill() abort
+function! libtmuxify#pane_kill() abort
   if b:tmuxified == 0
     return
   endif
@@ -93,12 +77,12 @@ function! tmuxify#pane_kill() abort
 endfunction
 
 " pane_run() {{{1
-function! tmuxify#pane_run(path, ...)
+function! libtmuxify#pane_run(path, ...)
   if b:tmuxified == 1
-    call tmuxify#pane_kill()
+    call libtmuxify#pane_kill()
   endif
 
-  call tmuxify#pane_create()
+  call libtmuxify#pane_create()
   let b:tmuxified = 1
 
   let l:action = 'clear; ' . g:tmuxify_run_program . ' ' . a:path
@@ -107,11 +91,11 @@ function! tmuxify#pane_run(path, ...)
     let l:action = l:action . '; ' . a:1
   endif
 
-  call tmuxify#pane_send(l:action)
+  call libtmuxify#pane_send(l:action)
 endfunction
 
 " pane_send() {{{1
-function! tmuxify#pane_send(...) abort
+function! libtmuxify#pane_send(...) abort
   if b:tmuxified == 0
     return
   endif
@@ -126,7 +110,7 @@ function! tmuxify#pane_send(...) abort
 endfunction
 
 " pane_set() {{{1
-function! tmuxify#pane_set()
+function! libtmuxify#pane_set()
   if !exists('$TMUX')
     echo 'tmuxify: This Vim is not running in a tmux session!'
     return
