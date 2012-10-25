@@ -1,35 +1,31 @@
 "=============================================================================="
 " URL:         https://github.com/mhinz/vim-tmuxify
-" Author:      Marco Hinz <mhinz@spline.de>
-" Maintainer:  Marco Hinz <mhinz@spline.de>
-"=============================================================================="
-"
-" The following functions and variables can be used by other plugins.
-"
-" Functions:
-"
-"   tmuxify#pane_create()
-"   tmuxify#pane_kill()
-"   tmuxify#pane_run()
-"   tmuxify#pane_send()
-"   tmuxify#pane_set()
-"
-" Variables:
-"
-"   g:loaded_tmuxify
-"   g:tmuxify_pane_height
-"   g:tmuxify_start_program
-"   g:tmuxify_vert_split
-"
+" Author:      Marco Hinz <mhi@codebro.de>
+" Maintainer:  Marco Hinz <mhi@codebro.de>
 "=============================================================================="
 
-" loaded? {{{1
+" loaded?  {{{1
 if exists('g:loaded_tmuxify') || &cp
   finish
 endif
-let g:loaded_tmuxify = 1
 
-let b:tmuxified = 0
+let g:loaded_tmuxify = 1
+let b:tmuxified      = 0
+
+" Defaults  {{{1
+if !exists('g:tmuxify_interpreter')
+  let g:tmuxify_interpreter = '$SHELL'
+endif
+
+" '-h' for horizontal split window
+" '-v' for vertical split window
+if !exists('g:tmuxify_vert_split')
+  let g:tmuxify_vert_split = '-v'
+endif
+
+if !exists('g:tmuxify_pane_height')
+  let g:tmuxify_pane_height = '16'
+endif
 
 " SID() {{{1
 function s:SID() abort
