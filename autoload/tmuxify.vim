@@ -13,8 +13,8 @@ let g:loaded_tmuxify = 1
 let b:tmuxified      = 0
 
 " Defaults  {{{1
-if !exists('g:tmuxify_interpreter')
-  let g:tmuxify_interpreter = '$SHELL'
+if !exists('g:tmuxify_start_program')
+  let g:tmuxify_start_program = '$SHELL'
 endif
 
 " '-h' for horizontal split window
@@ -101,7 +101,7 @@ function! tmuxify#pane_run(path, ...)
   call tmuxify#pane_create()
   let b:tmuxified = 1
 
-  let l:action = 'clear; ' . g:tmuxify_start_program . ' ' . a:path
+  let l:action = 'clear; ' . g:tmuxify_run_program . ' ' . a:path
 
   if exists('a:1')
     let l:action = l:action . '; ' . a:1
