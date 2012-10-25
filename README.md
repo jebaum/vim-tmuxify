@@ -7,8 +7,6 @@ Limits exist only in your mind! Vim on!
 
 ## Installation
 
-Put the file into ~/.vim/autoload/.
-
 Or just clone it into ~/.vim/bundle/.
 
 ## Usage
@@ -18,11 +16,6 @@ Or just clone it into ~/.vim/bundle/.
 ## Author
 
 Marco Hinz `<mhinz@spline.de>`
-
-## Endorse me
-
-[![endorse](http://api.coderwall.com/mhinz/endorse.png)]
-(http://coderwall.com/mhinz)
 
 ## License
 
