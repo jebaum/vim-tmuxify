@@ -19,17 +19,19 @@ if !exists('g:tmuxify_pane_height')
 endif
 
 " commands {{{1
-command! -nargs=0 -bar TxKill      call libtmuxify#pane_kill()
-command! -nargs=0 -bar TxSetTarget call libtmuxify#pane_set()
-command! -nargs=? -bar TxCreate    call libtmuxify#pane_create(<args>)
-command! -nargs=? -bar TxSend      call libtmuxify#pane_send(<args>)
+command! -nargs=0 -bar TxClear  call libtmuxify#pane_send('clear')
+command! -nargs=0 -bar TxKill   call libtmuxify#pane_kill()
+command! -nargs=0 -bar TxSet    call libtmuxify#pane_set()
+command! -nargs=? -bar TxCreate call libtmuxify#pane_create(<args>)
+command! -nargs=? -bar TxRun    call libtmuxify#pane_run(<args>)
+command! -nargs=? -bar TxSend   call libtmuxify#pane_send(<args>)
 
 " mappings {{{1
-nnoremap <silent> <leader>mc :call libtmuxify#pane_send('clear')<cr>
-nnoremap <silent> <leader>mn :call libtmuxify#pane_create()<cr>
-nnoremap <silent> <leader>mp :call libtmuxify#pane_set()<cr>
-nnoremap <silent> <leader>mq :call libtmuxify#pane_kill()<cr>
-nnoremap <silent> <leader>mr :call libtmuxify#pane_run(expand('%:r'))<cr>
-nnoremap <silent> <leader>ms :call libtmuxify#pane_send()<cr>
+nnoremap <silent> <leader>mc :TxClear<cr>
+nnoremap <silent> <leader>mn :TxCreate<cr>
+nnoremap <silent> <leader>mp :TxSet<cr>
+nnoremap <silent> <leader>mq :TxKill<cr>
+nnoremap <silent> <leader>mr :TxRun(expand('%:r'))<cr>
+nnoremap <silent> <leader>ms :TxSend<cr>
 
-vnoremap <silent> <leader>ms "my :call libtmuxify#pane_send(@m)<cr>
+vnoremap <silent> <leader>ms "my :TxSend(@m)<cr>
