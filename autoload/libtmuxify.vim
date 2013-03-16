@@ -30,6 +30,12 @@ if exists('g:loaded_libtmuxify') || &cp
 endif
 let g:loaded_libtmuxify = 1
 
+" '-h' for horizontal split window
+" '-v' for vertical split window
+let s:split         = exists('g:tmuxify_split')         ? g:tmuxify_split         : '-v'
+let s:pane_height   = exists('g:tmuxify_pane_height')   ? g:tmuxify_pane_height   : '16'
+let s:start_program = exists('g:tmuxify_start_program') ? g:tmuxify_start_program : 'env -i'
+
 let b:tmuxified = 0
 
 " SID() {{{1
@@ -69,7 +75,7 @@ function! libtmuxify#pane_create(...) abort
     return
   endif
 
-  call system('tmux split-window -d '. g:tmuxify_vert_split .' -l '. g:tmuxify_pane_height)
+  call system('tmux split-window -d '. s:split .' -l '. s:pane_height)
 
   let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
   let b:tmuxified   = 1
@@ -104,7 +110,7 @@ function! libtmuxify#pane_run(path, ...)
   call libtmuxify#pane_create()
   let b:tmuxified = 1
 
-  let l:action = 'clear; '. g:tmuxify_run_program .' '. a:path
+  let l:action = 'clear; '. s:run_program .' '. a:path
 
   if exists('a:1')
     let l:action = l:action .'; '. a:1
