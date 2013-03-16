@@ -44,13 +44,12 @@ endfunction
 
 " complete_windows() {{{1
 function! s:complete_windows(a, l, p) abort
-  return system('tmux list-windows -t ' . b:sessions . ' | cut -d: -f1')
+  return system('tmux list-windows -t '. b:sessions .' | cut -d: -f1')
 endfunction
 
 " complete_panes() {{{1
 function! s:complete_panes(a, l, p) abort
-  return system('tmux list-panes -t ' . b:sessions . ':' . b:windows .
-        \' | cut -d: -f1')
+  return system('tmux list-panes -t '. b:sessions .':'. b:windows .' | cut -d: -f1')
 endfunction
 
 " setup_exit_handler() {{{1
@@ -70,8 +69,7 @@ function! libtmuxify#pane_create(...) abort
     return
   endif
 
-  call system('tmux split-window -d ' . g:tmuxify_vert_split . ' -l ' .
-        \ g:tmuxify_pane_height)
+  call system('tmux split-window -d '. g:tmuxify_vert_split .' -l '. g:tmuxify_pane_height)
 
   let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
   let b:tmuxified   = 1
@@ -89,7 +87,7 @@ function! libtmuxify#pane_kill() abort
     return
   endif
 
-  call system('tmux kill-pane -t ' . b:target_pane)
+  call system('tmux kill-pane -t '. b:target_pane)
   unlet b:target_pane
   let b:tmuxified = 0
 
@@ -106,10 +104,10 @@ function! libtmuxify#pane_run(path, ...)
   call libtmuxify#pane_create()
   let b:tmuxified = 1
 
-  let l:action = 'clear; ' . g:tmuxify_run_program . ' ' . a:path
+  let l:action = 'clear; '. g:tmuxify_run_program .' '. a:path
 
   if exists('a:1')
-    let l:action = l:action . '; ' . a:1
+    let l:action = l:action .'; '. a:1
   endif
 
   call libtmuxify#pane_send(l:action)
@@ -127,7 +125,7 @@ function! libtmuxify#pane_send(...) abort
     let l:action = input('tmuxify> ')
   endif
 
-  call system('tmux send-keys -t ' . b:target_pane . ' ' . shellescape(l:action) . ' C-m')
+  call system('tmux send-keys -t '. b:target_pane .' '. shellescape(l:action) .' C-m')
 endfunction
 
 " pane_set() {{{1
@@ -137,14 +135,11 @@ function! libtmuxify#pane_set()
     return
   endif
 
-  let b:sessions = input('Session: ', '', 'custom,<SNR>' . s:SID() .
-        \ '_complete_sessions')
-  let b:windows = input('Window: ', '', 'custom,<SNR>' . s:SID() .
-        \ '_complete_windows')
-  let b:panes = input('Pane: ', '', 'custom,<SNR>' . s:SID() .
-        \'_complete_panes')
+  let b:sessions = input('Session: ', '', 'custom,<SNR>'. s:SID() .'_complete_sessions')
+  let b:windows  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
+  let b:panes    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
 
-  let b:target_pane = b:sessions . ':' .  b:windows . '.' . b:panes
+  let b:target_pane = b:sessions .':'.  b:windows .'.'. b:panes
   let b:tmuxified   = 1
 
   call <SID>setup_exit_handler()
