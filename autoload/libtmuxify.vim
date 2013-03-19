@@ -102,7 +102,7 @@ endfunction
 
 " pane_run() {{{1
 function! libtmuxify#pane_run(path, ...) abort
-  if !b:tmuxified == 1
+  if !b:tmuxified
     call libtmuxify#pane_create()
     let b:tmuxified = 1
   endif
@@ -121,8 +121,9 @@ endfunction
 
 " pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
-  if b:tmuxified == 0
-    return
+  if !b:tmuxified
+    call libtmuxify#pane_create()
+    let b:tmuxified = 1
   endif
 
   let action = exists('a:1') ? a:1 : input('TxSend> ')
