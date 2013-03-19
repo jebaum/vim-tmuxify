@@ -32,9 +32,8 @@ let g:loaded_libtmuxify = 1
 
 " '-h' for horizontal split window
 " '-v' for vertical split window
-let s:split         = exists('g:tmuxify_split')         ? g:tmuxify_split         : '-v'
-let s:pane_height   = exists('g:tmuxify_pane_height')   ? g:tmuxify_pane_height   : '16'
-let s:start_program = exists('g:tmuxify_start_program') ? g:tmuxify_start_program : 'env -i'
+let s:split       = exists('g:tmuxify_split')       ? g:tmuxify_split       : '-v'
+let s:pane_height = exists('g:tmuxify_pane_height') ? g:tmuxify_pane_height : '16'
 
 let b:tmuxified = 0
 
@@ -75,7 +74,7 @@ function! libtmuxify#pane_create(...) abort
     return
   endif
 
-  call system('tmux split-window -d '. s:split .' -l '. s:pane_height)
+  call system('tmux split-window -d '. g:tmuxify_split .' -l '. g:tmuxify_pane_height)
 
   let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
   let b:tmuxified   = 1
@@ -102,7 +101,7 @@ function! libtmuxify#pane_kill() abort
 endfunction
 
 " pane_run() {{{1
-function! libtmuxify#pane_run(path, ...)
+function! libtmuxify#pane_run(path, ...) abort
   if b:tmuxified == 1
     call libtmuxify#pane_kill()
   endif
@@ -110,13 +109,16 @@ function! libtmuxify#pane_run(path, ...)
   call libtmuxify#pane_create()
   let b:tmuxified = 1
 
-  let l:action = 'clear; '. s:run_program .' '. a:path
-
-  if exists('a:1')
-    let l:action = l:action .'; '. a:1
+  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, &ft)
+    let action = g:tmuxify_run[&ft]
+  else
+    let action = input('TxRun> ')
+    let g:tmuxify_run[&ft] = action
   endif
 
-  call libtmuxify#pane_send(l:action)
+  let action = substitute(action, '%', a:path, '')
+
+  call libtmuxify#pane_send(action)
 endfunction
 
 " pane_send() {{{1
@@ -125,17 +127,18 @@ function! libtmuxify#pane_send(...) abort
     return
   endif
 
-  if exists('a:1')
-    let l:action = a:1
-  else
-    let l:action = input('tmuxify> ')
-  endif
+  let action = exists('a:1') ? a:1 : input('TxSend> ')
 
-  call system('tmux send-keys -t '. b:target_pane .' '. shellescape(l:action) .' C-m')
+  call system('tmux send-keys -t '. b:target_pane .' '. shellescape(action) .' C-m')
+endfunction
+
+" run_set_command_for_filetype() {{{1
+function! libtmuxify#run_set_command_for_filetype() abort
+  let g:tmuxify_run[&ft] = input('TxSet('. &ft .')> ')
 endfunction
 
 " pane_set() {{{1
-function! libtmuxify#pane_set()
+function! libtmuxify#pane_set() abort
   if !exists('$TMUX')
     echo 'tmuxify: This Vim is not running in a tmux session!'
     return
