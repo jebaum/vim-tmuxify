@@ -106,10 +106,7 @@ function! libtmuxify#pane_run(path, ...) abort
     call libtmuxify#pane_kill()
   endif
 
-  call libtmuxify#pane_create()
-  let b:tmuxified = 1
-
-  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, &ft)
+  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, &ft) && !empty(g:tmuxify_run[&ft])
     let action = g:tmuxify_run[&ft]
   else
     let action = input('TxRun> ')
