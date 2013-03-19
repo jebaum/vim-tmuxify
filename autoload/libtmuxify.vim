@@ -102,8 +102,9 @@ endfunction
 
 " pane_run() {{{1
 function! libtmuxify#pane_run(path, ...) abort
-  if b:tmuxified == 1
-    call libtmuxify#pane_kill()
+  if !b:tmuxified == 1
+    call libtmuxify#pane_create()
+    let b:tmuxified = 1
   endif
 
   if exists('g:tmuxify_run') && has_key(g:tmuxify_run, &ft) && !empty(g:tmuxify_run[&ft])
