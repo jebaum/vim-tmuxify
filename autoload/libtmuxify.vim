@@ -140,6 +140,12 @@ function! libtmuxify#run_set_command_for_filetype() abort
   let g:tmuxify_run[&ft] = input('TxSet('. &ft .')> ')
 endfunction
 
+function! libtmuxify#pane_send_sigint() abort
+  if exists('b:target_pane')
+    call system('tmux send-keys -t '. b:target_pane .' C-c')
+  endif
+endfunction
+
 " pane_set() {{{1
 function! libtmuxify#pane_set() abort
   if !exists('$TMUX')
