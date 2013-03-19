@@ -111,6 +111,9 @@ function! libtmuxify#pane_run(path, ...) abort
     let action = g:tmuxify_run[&ft]
   else
     let action = input('TxRun> ')
+    if !exists('g:tmuxify_run')
+      let g:tmuxify_run = {}
+    endif
     let g:tmuxify_run[&ft] = action
   endif
 
