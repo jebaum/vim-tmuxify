@@ -133,6 +133,10 @@ endfunction
 
 " run_set_command_for_filetype() {{{1
 function! libtmuxify#run_set_command_for_filetype() abort
+  if !exists('g:tmuxify_run')
+    let g:tmuxify_run = {}
+  endif
+
   let g:tmuxify_run[&ft] = input('TxSet('. &ft .')> ')
 endfunction
 
