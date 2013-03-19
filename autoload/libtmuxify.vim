@@ -76,7 +76,7 @@ function! libtmuxify#pane_create(...) abort
 
   call system('tmux split-window -d '. g:tmuxify_split .' -l '. g:tmuxify_pane_height)
 
-  let b:target_pane = str2nr(system('tmux list-panes | tail -n1 | cut -d: -f1'))
+  let b:target_pane = str2nr(system("tmux list-panes | awk '$7 > max { max=$7; ret=$1 } END { print ret + 0 }'"))
   let b:tmuxified   = 1
 
   if exists('a:1')
