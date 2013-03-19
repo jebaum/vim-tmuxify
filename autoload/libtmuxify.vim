@@ -30,11 +30,6 @@ if exists('g:loaded_libtmuxify') || &cp || !executable('awk')
 endif
 let g:loaded_libtmuxify = 1
 
-" '-h' for horizontal split window
-" '-v' for vertical split window
-let s:split       = exists('g:tmuxify_split')       ? g:tmuxify_split       : '-v'
-let s:pane_height = exists('g:tmuxify_pane_height') ? g:tmuxify_pane_height : '16'
-
 let b:tmuxified = 0
 
 " SID() {{{1
