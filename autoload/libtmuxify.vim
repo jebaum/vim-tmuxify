@@ -127,6 +127,10 @@ function! libtmuxify#pane_send(...) abort
   let action = exists('a:1') ? a:1 : input('TxSend> ')
 
   call system('tmux send-keys -t '. b:target_pane .' '. shellescape(action) .' C-m')
+  if shell_error
+    echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
+    unlet b:target_pane
+  endif
 endfunction
 
 " run_set_command_for_filetype() {{{1
@@ -139,8 +143,15 @@ function! libtmuxify#run_set_command_for_filetype() abort
 endfunction
 
 function! libtmuxify#pane_send_sigint() abort
-  if exists('b:target_pane')
-    call system('tmux send-keys -t '. b:target_pane .' C-c')
+  if !exists('b:target_pane')
+    return
+  endif
+
+  call system('tmux send-keys -t '. b:target_pane .' C-c')
+  echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
+  if shell_error
+    echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
+    unlet b:target_pane
   endif
 endfunction
 
