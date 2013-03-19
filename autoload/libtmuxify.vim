@@ -25,7 +25,7 @@
 " ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 " POSSIBILITY OF SUCH DAMAGE.
 
-if exists('g:loaded_libtmuxify') || &cp
+if exists('g:loaded_libtmuxify') || &cp || !executable('awk')
   finish
 endif
 let g:loaded_libtmuxify = 1
