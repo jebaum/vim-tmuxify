@@ -60,19 +60,28 @@ function! s:setup_exit_handler()
   augroup END
 endfunction
 
+" pane_get_id() {{{1
+function! s:pane_get_id(pane_num) abort
+  let pane_id = system("tmux list-panes -F '#P #D' | awk '$1 == ". a:pane_num ." { print $2 }' | cut -b2-")
+  if shell_error
+    echo 'tmuxify: s:pane_get_id() failed!'
+    return
+  endif
+  return str2nr(pane_id)
+endfunction
+
 " pane_create() {{{1
 function! libtmuxify#pane_create(...) abort
-  if b:tmuxified == 1
-    if !exists('$TMUX')
-      echo 'tmuxify: This Vim is not running in a tmux session!'
-    endif
+  if !exists('$TMUX')
+    echo 'tmuxify: This Vim is not running in a tmux session!'
     return
   endif
 
   call system('tmux split-window -d '. g:tmuxify_split .' -l '. g:tmuxify_pane_height)
+  let b:tmuxified = 1
 
-  let b:target_pane = str2nr(system("tmux list-panes | awk '$7 > max { max=$7; ret=$1 } END { print ret + 0 }'"))
-  let b:tmuxified   = 1
+  let ret = split(system("tmux list-panes -F '#P #D' | awk '$2 > max { max=$2; ret=$1 } END { print max, ret + 0 }' | cut -b2-"), ' ')
+  let [ b:pane_id, b:pane_num ] = [ str2nr(ret[0]), str2nr(ret[1]) ]
 
   if exists('a:1')
     call libtmuxify#pane_send(a:1)
@@ -84,11 +93,18 @@ endfunction
 " pane_kill() {{{1
 function! libtmuxify#pane_kill() abort
   if b:tmuxified == 0
+    echo 'tmuxify: there is no associated pane! Run :TxCreate.'
     return
   endif
 
-  call system('tmux kill-pane -t '. b:target_pane)
-  unlet b:target_pane
+  if b:pane_id == s:pane_get_id(b:pane_num)
+    call system('tmux kill-pane -t '. b:pane_num)
+  else
+    echo 'tmuxify: the associated pane was already closed! Run :TxCreate.'
+  endif
+
+  unlet b:pane_id
+  unlet b:pane_num
   let b:tmuxified = 0
 
   autocmd! tmuxify VimLeave *
@@ -99,7 +115,6 @@ endfunction
 function! libtmuxify#pane_run(path, ...) abort
   if !b:tmuxified
     call libtmuxify#pane_create()
-    let b:tmuxified = 1
   endif
 
   let ft = !empty(&ft) ? &ft : ' '
@@ -121,18 +136,14 @@ endfunction
 
 " pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
-  if !b:tmuxified
+  if !b:tmuxified || !exists('b:pane_id') || (b:pane_id != s:pane_get_id(b:pane_num))
+    echo 'tmuxified: '. b:tmuxified
     call libtmuxify#pane_create()
-    let b:tmuxified = 1
   endif
 
   let action = exists('a:1') ? a:1 : input('TxSend> ')
 
-  call system('tmux send-keys -t '. b:target_pane .' '. shellescape(action) .' C-m')
-  if shell_error
-    echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
-    unlet b:target_pane
-  endif
+  call system('tmux send-keys -t '. b:pane_num .' '. shellescape(action) .' C-m')
 endfunction
 
 " run_set_command_for_filetype() {{{1
@@ -146,16 +157,16 @@ function! libtmuxify#run_set_command_for_filetype() abort
   let g:tmuxify_run[ft] = input('TxSet('. ft .')> ')
 endfunction
 
+" pane_send_sigint() {{{1
 function! libtmuxify#pane_send_sigint() abort
-  if !exists('b:target_pane')
+  if !b:tmuxified
     return
   endif
 
-  call system('tmux send-keys -t '. b:target_pane .' C-c')
-  echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
+  call system('tmux send-keys -t '. b:pane_num .' C-c')
   if shell_error
-    echo 'tmuxify: pane '. b:target_pane ." doesn't exist! Run :TxSetPane."
-    unlet b:target_pane
+    echo 'tmuxify: pane '. b:pane_num ." doesn't exist! Run :TxSetPane."
+    unlet [ b:pane_id, b:pane_num ]
   endif
 endfunction
 
@@ -170,8 +181,9 @@ function! libtmuxify#pane_set() abort
   let b:windows  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
   let b:panes    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
 
-  let b:target_pane = b:sessions .':'.  b:windows .'.'. b:panes
-  let b:tmuxified   = 1
+  let b:pane_num  = b:sessions .':'.  b:windows .'.'. b:panes
+  let b:pane_id   = s:pane_get_id(b:pane_num)
+  let b:tmuxified = 1
 
   call <SID>setup_exit_handler()
 endfunction
