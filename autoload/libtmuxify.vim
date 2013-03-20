@@ -102,14 +102,16 @@ function! libtmuxify#pane_run(path, ...) abort
     let b:tmuxified = 1
   endif
 
-  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, &ft) && !empty(g:tmuxify_run[&ft])
-    let action = g:tmuxify_run[&ft]
+  let ft = !empty(&ft) ? &ft : ' '
+
+  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, ft) && !empty(g:tmuxify_run[ft])
+    let action = g:tmuxify_run[ft]
   else
     let action = input('TxRun> ')
     if !exists('g:tmuxify_run')
       let g:tmuxify_run = {}
     endif
-    let g:tmuxify_run[&ft] = action
+    let g:tmuxify_run[ft] = action
   endif
 
   let action = substitute(action, '%', a:path, '')
@@ -139,7 +141,9 @@ function! libtmuxify#run_set_command_for_filetype() abort
     let g:tmuxify_run = {}
   endif
 
-  let g:tmuxify_run[&ft] = input('TxSet('. &ft .')> ')
+  let ft = !empty(&ft) ? &ft : ' '
+
+  let g:tmuxify_run[ft] = input('TxSet('. ft .')> ')
 endfunction
 
 function! libtmuxify#pane_send_sigint() abort
