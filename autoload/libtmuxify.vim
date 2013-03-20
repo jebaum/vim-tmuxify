@@ -75,6 +75,8 @@ function! libtmuxify#pane_create(...) abort
   if b:tmuxified
     if !exists('$TMUX')
       echo 'tmuxify: This Vim is not running in a tmux session!'
+    else
+      echo "tmuxify: I'm already associated with pane ". b:pane_num .'!'
     endif
     return
   endif
@@ -139,6 +141,7 @@ endfunction
 " pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
   if !b:tmuxified || !exists('b:pane_id') || (b:pane_id != s:pane_get_id(b:pane_num))
+    let b:tmuxified = 0
     call libtmuxify#pane_create()
   endif
 
