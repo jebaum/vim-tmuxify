@@ -28,7 +28,41 @@ I suggest using tpope's plain and awesome pathogen:
 
 Afterwards, just clone vim-signify into ~/.vim/bundle/.
 
-## Usage
+## Options
+
+Put these variables into your vimrc for great enjoyment. The shown examples
+are also the default values.
+
+```vim
+let g:tmuxify_pane_split = '-v'
+```
+
+Split either vertically or horizontally. The two possible values are therefore
+'-v' and '-h'.
+
+```vim
+let g:tmuxify_pane_size = '10'
+```
+
+The size of the associated pane.
+
+```vim
+let g:tmuxify_run = {}
+```
+
+Set run commands for specific filetypes. '%' will be replaced by the full path
+to the current buffer.
+
+Example:
+
+```vim
+let g:tmuxify_run = {
+    \ 'sh': 'bash %',
+    \ 'go': 'go build %',
+    \}
+```
+
+## Documentation
 
 `:h tmuxify`
 
