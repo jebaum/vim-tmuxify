@@ -38,17 +38,17 @@ function s:SID() abort
 endfun
 
 " complete_sessions() {{{1
-function! s:complete_sessions(a, l, p) abort
+function! s:complete_sessions(...) abort
   return system('tmux list-sessions | cut -d: -f1')
 endfunction
 
 " complete_windows() {{{1
-function! s:complete_windows(a, l, p) abort
+function! s:complete_windows(...) abort
   return system('tmux list-windows -t '. b:sessions .' | cut -d: -f1')
 endfunction
 
 " complete_panes() {{{1
-function! s:complete_panes(a, l, p) abort
+function! s:complete_panes(...) abort
   return system('tmux list-panes -t '. b:sessions .':'. b:windows .' | cut -d: -f1')
 endfunction
 

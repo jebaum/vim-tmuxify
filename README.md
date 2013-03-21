@@ -22,7 +22,7 @@ Thank you for flying mhi airlines. Get the Vim on!
 
 ## Installation
 
-I suggest using tpope's plain and awesome pathogen:
+I suggest using tpope's pathogen:
 
 - https://github.com/tpope/vim-pathogen
 
