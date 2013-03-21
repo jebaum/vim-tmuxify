@@ -81,7 +81,7 @@ function! libtmuxify#pane_create(...) abort
     return
   endif
 
-  call system('tmux split-window -d '. g:tmuxify_split .' -l '. g:tmuxify_pane_height)
+  call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
   let b:tmuxified = 1
 
   let ret = split(system("tmux list-panes -F '#P #D' | awk '$2 > max { max=$2; ret=$1 } END { print max, ret + 0 }' | cut -b2-"), ' ')

@@ -12,152 +12,136 @@
                                                              \/__/
 
 
-                              Reference Manual~
+                              Reference Manual
 
 
 ==============================================================================
 CONTENTS                                                    *tmuxify-contents*
 
     1.Intro..........................................|tmuxify-intro|
-    2.Usage..........................................|tmuxify-usage|
-    3.Options........................................|tmuxify-options|
-    4.Functions......................................|tmuxify-functions|
-    5.About..........................................|tmuxify-about|
-    6.Credits........................................|tmuxify-credits|
-    7.License........................................|tmuxify-license|
+    2.Options........................................|tmuxify-options|
+    3.Mappings.......................................|tmuxify-mappings|
+    4.About..........................................|tmuxify-author|
+    5.License........................................|tmuxify-license|
 
 
 ==============================================================================
 1. Intro                                                       *tmuxify-intro*
 
-Tmuxify is a pretty lightweight library which other plugins can built on. Its
-main purpose is to provide an API for handling tmux panes.
+Tmuxify is a plugin for handling tmux panes:
 
-You can open and close panes, set a specifc pane to work with, send input to a
-pane, send the visual selection to the pane, opening a pane and compile or
-execute the file your current buffer is holding and much, much more!
+- create/kill associated panes
 
-Its main use case is to provide a set of basic functions and variables which
-can by used by other scripts to build more filetype-specific plugins. It is
-optimizing your edit, compile, run cycle.
+- associate tmuxify to already existing panes
 
+- send visually highlighted lines to the associated pane
 
-==============================================================================
-2. Usage                                                       *tmuxify-usage*
+- send to pane by prompting for input
 
-Basically plugin authors should just play around with the given functions and
-variables and trying to come up with nice combinations and mappings of them.
+- send to pane by setting a run command for the current filetype
 
-You can find an example of a JavaScript plugin based on tmuxify here:
+- once set, run commands are remembered, but can easily be reset
 
-https://github.com/mhinz/vim-javascript-minerva
+- all the plugin configuration happens in one dictionary that holds filetypes
+  as keys and run commands as values
 
 
 ==============================================================================
-3. Options                                                   *tmuxify-options*
+2. Options                                                   *tmuxify-options*
 
-No variable is set by default. That is the task of the plugin author.
-
-
-                                                     *tmuxify-var-run_program*
->
-    let g:tmuxify-var-run_program = 'python'
-<
-
-This program is used |tmuxify-func-pane_run|.
+Put these variables into your vimrc for great enjoyment. The shown examples
+are also the default values.
 
 
-                                                     *tmuxify-var-pane_height*
->
-    let g:tmuxify-var-pane_height = 20
-<
+    let g:tmuxify_pane_split = '-v'
 
-Controls the height of the tmuxified pane.
+Split either vertically or horizontally. The two possible values are therefore
+'-v' and '-h'.
 
 
-                                                      *tmuxify-var-vert_split*
->
-    let g:tmuxify_vert_split = '-v'
-<
+    let g:tmuxify_pane_size = '10'
 
-Possible values: '-v', '-h'
+The size of the associated pane.
 
-The pane of Vim and the to be tmuxified pane will be split horizontal or
-vertical.
+
+    let g:tmuxify_run = {}
+
+Set run commands for specific filetypes. '%' will be replaced by the full path
+to the current buffer.
+
+Example:
+
+    let g:tmuxify_run = {
+        \ 'sh': 'bash %',
+        \ 'go': 'go build %',
+        \}
 
 
 ==============================================================================
-4. Functions                                               *tmuxify-functions*
+3. Mappings                                                 *tmuxify-mappings*
 
-tmuxify#pane_create()                               *tmuxify-func-pane_create*
-
-Takes 1 optional argument.
-
-Creates a new pane. tmuxify will use its pane number to reference it from now
-on. If that number should ever change, because you were going wild with tmux'
-pane management, you would have to call |tmuxify-func-pane_set|.
+These are all normal mode mappings.
 
 
-If a pane is created it starts a new shell. This function takes any shell
-input. It could be the interpreter for the language you write a plugin for.
+    <leader>mn
+
+Executes TxCreate. Creates a new pane and associates with it.
 
 
-tmuxify#pane_kill()                                   *tmuxify-func-pane_kill*
+    <leader>mq
 
-Takes no arguments.
-
-Just closes the tmuxified pane.
+Executes TxKill. Closes the associated pane.
 
 
-tmuxify#pane_run()                                     *tmuxify-func-pane_run*
+    <leader>ms
 
-Takes 1 argument.
-
-This function takes a path and uses |tmuxify-var-default_start_program|
-prepended by a 'clear'. Afterwards the default start program is called again.
+Executes TxSend. Prompts for input and sends it to the associated pane. This
+mapping also works on visual selections.
 
 
-tmuxify#pane_send()                                   *tmuxify-func-pane_send*
+    <leader>mr
 
-Takes 1 optional argument.
-
-If an argument is given, it will be sent to the tmuxified pane. If that is not
-the case and you haven't specified a default value using
-|tmuxify-var-default_send_action|, the function will prompt you for the input.
+Executes TxRun. Prompts for input if there is no entry in g:tmuxify_run for
+the current filetype. '%' will be replaced by the full path to the current
+buffer.
 
 
-tmuxify#pane_set()                                     *tmuxify-func-pane_set*
+    <leader>mt
 
-Takes no arguments.
+Executes TxSetRunCmd. Change the run command for the current filetype.
 
-Sets the pane to be tmuxified. It prompts the user for session, window and
-pane number providing tab completion for all three of them.
+
+    <leader>mp
+
+Executes TxSetPane. Associate an already existing pane with tmuxify. Note: You
+can use tab completion here.
+
+
+    <leader>mc
+
+Executes TxClear. This is a shortcut for TxSend('clear').
+
+
+    <leader>mb
+
+Executes TxSigInt. Sends an interrupt signal to the associated pane.
 
 
 ==============================================================================
-5. About                                                       *tmuxify-about*
-
-The author of tmuxify is a lazy bum who somehow enjoys wasting time toying
-with Vim and especially VimL.
+4. About the author                                           *tmuxify-author*
 
 You can usually find him as mhi^ in #vim on irc.freenode.org.
 
-For latest developments:
+For latest developments: https://github.com/mhinz
 
-https://github.com/mhinz
+If you use any of my plugins, star it on github. This is a great way of
+getting feedback! Same for issues or feature requests.
 
 Thank you for flying mhi airlines. Get the Vim on!
 
 
 ==============================================================================
-6. Credits                                                   *tmuxify-credits*
-
-No one so far! Want to be the first? - You know where to find the repo.
-Do you accept the challenge? Fame and fortune to the glorious adventurers.
-
-
-==============================================================================
-7. Licence                                                   *tmuxify-license*
+5. Licence                                                   *tmuxify-license*
 
 Distributed under the same terms as Vim itself (see |:help license|).
 
