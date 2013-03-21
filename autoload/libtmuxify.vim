@@ -107,8 +107,7 @@ function! libtmuxify#pane_kill() abort
     echo 'tmuxify: the associated pane was already closed! Run :TxCreate.'
   endif
 
-  unlet b:pane_id
-  unlet b:pane_num
+  unlet b:pane_id b:pane_num
   let b:tmuxified = 0
 
   autocmd! tmuxify VimLeave *
@@ -170,7 +169,7 @@ function! libtmuxify#pane_send_sigint() abort
   call system('tmux send-keys -t '. b:pane_num .' C-c')
   if shell_error
     echo 'tmuxify: pane '. b:pane_num ." doesn't exist! Run :TxSetPane."
-    unlet [ b:pane_id, b:pane_num ]
+    unlet b:pane_id b:pane_num
   endif
 endfunction
 
