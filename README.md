@@ -62,6 +62,60 @@ let g:tmuxify_run = {
     \}
 ```
 
+## Mappings
+
+```vim
+<leader>mn
+```
+
+Executes TxCreate. Creates a new pane and associates with it.
+
+```vim
+<leader>mq
+```
+
+Executes TxKill. Closes the associated pane.
+
+```vim
+<leader>ms
+```
+
+Executes TxSend. Prompts for input and sends it to the associated pane. This
+mapping also works on visual selections.
+
+```vim
+<leader>mr
+```
+
+Executes TxRun. Prompts for input if there is no entry in g:tmuxify_run for
+the current filetype. '%' will be replaced by the full path to the current
+buffer.
+
+```vim
+<leader>mt
+```
+
+Executes TxSetRunCmd. Change the run command for the current filetype.
+
+```vim
+<leader>mp
+```
+
+Executes TxSetPane. Associate an already existing pane with tmuxify. Note: You
+can use tab completion here.
+
+```vim
+<leader>mc
+```
+
+Executes TxClear. This is a shortcut for TxSend('clear').
+
+```vim
+<leader>mb
+```
+
+Executes TxSigInt. Sends an interrupt signal to the associated pane.
+
 ## Documentation
 
 `:h tmuxify`
