@@ -140,6 +140,9 @@ endfunction
 " pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
   if !b:tmuxified || !exists('b:pane_id') || (b:pane_id != s:pane_get_id(b:pane_num))
+    if exists('a:1') && (a:1 == 'clear')
+      return
+    endif
     let b:tmuxified = 0
     call libtmuxify#pane_create()
   endif
