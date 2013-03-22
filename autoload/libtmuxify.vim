@@ -156,14 +156,18 @@ function! libtmuxify#pane_send(...) abort
 endfunction
 
 " run_set_command_for_filetype() {{{1
-function! libtmuxify#run_set_command_for_filetype() abort
+function! libtmuxify#run_set_command_for_filetype(...) abort
   if !exists('g:tmuxify_run')
     let g:tmuxify_run = {}
   endif
 
   let ft = !empty(&ft) ? &ft : ' '
 
-  let g:tmuxify_run[ft] = input('TxSet('. ft .')> ')
+  if exists('a:1')
+    let g:tmuxify_run[ft] = a:1
+  else
+    let g:tmuxify_run[ft] = input('TxSet('. ft .')> ')
+  endif
 endfunction
 
 " pane_send_sigint() {{{1
