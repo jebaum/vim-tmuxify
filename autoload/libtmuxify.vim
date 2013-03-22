@@ -115,24 +115,27 @@ function! libtmuxify#pane_kill() abort
 endfunction
 
 " pane_run() {{{1
-function! libtmuxify#pane_run(path, ...) abort
+function! libtmuxify#pane_run(...) abort
   if !b:tmuxified
     call libtmuxify#pane_create()
   endif
 
   let ft = !empty(&ft) ? &ft : ' '
 
-  if exists('g:tmuxify_run') && has_key(g:tmuxify_run, ft) && !empty(g:tmuxify_run[ft])
+  if exists('a:1')
+    let action = a:1
+  elseif exists('g:tmuxify_run') && has_key(g:tmuxify_run, ft) && !empty(g:tmuxify_run[ft])
     let action = g:tmuxify_run[ft]
   else
     let action = input('TxRun> ')
-    if !exists('g:tmuxify_run')
-      let g:tmuxify_run = {}
-    endif
-    let g:tmuxify_run[ft] = action
   endif
 
-  let action = substitute(action, '%', a:path, '')
+  if !exists('g:tmuxify_run')
+    let g:tmuxify_run = {}
+  endif
+  let g:tmuxify_run[ft] = action
+
+  let action = substitute(action, '%', resolve(expand('%:p')), '')
 
   call libtmuxify#pane_send(action)
 endfunction

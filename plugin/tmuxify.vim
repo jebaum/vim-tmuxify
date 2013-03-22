@@ -24,7 +24,7 @@ nnoremap <silent> <leader>mc :TxClear<cr>
 nnoremap <silent> <leader>mn :TxCreate<cr>
 nnoremap <silent> <leader>mp :TxSetPane<cr>
 nnoremap <silent> <leader>mq :TxKill<cr>
-nnoremap <silent> <leader>mr :TxRun(resolve(expand('%:p')))<cr>
+nnoremap <silent> <leader>mr :TxRun<cr>
 nnoremap <silent> <leader>ms :TxSend<cr>
 nnoremap <silent> <leader>mt :TxSetRunCmd<cr>
 
