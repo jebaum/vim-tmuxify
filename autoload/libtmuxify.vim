@@ -72,13 +72,12 @@ endfunction
 
 " pane_create() {{{1
 function! libtmuxify#pane_create(...) abort
-  if b:tmuxified
-    if !exists('$TMUX')
-      echo 'tmuxify: This Vim is not running in a tmux session!'
-    else
-      echo "tmuxify: I'm already associated with pane ". b:pane_num .'!'
-    endif
-    return
+  if !exists('$TMUX')
+    echo 'tmuxify: This Vim is not running in a tmux session!'
+    return -1
+  elseif b:tmuxified
+    echo "tmuxify: I'm already associated with pane ". b:pane_num .'!'
+    return -1
   endif
 
   call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
@@ -116,8 +115,8 @@ endfunction
 
 " pane_run() {{{1
 function! libtmuxify#pane_run(...) abort
-  if !b:tmuxified
-    call libtmuxify#pane_create()
+  if !b:tmuxified && (libtmuxify#pane_create() == -1)
+    return
   endif
 
   let ft = !empty(&ft) ? &ft : ' '
@@ -147,7 +146,9 @@ function! libtmuxify#pane_send(...) abort
       return
     endif
     let b:tmuxified = 0
-    call libtmuxify#pane_create()
+    if libtmuxify#pane_create() == -1
+      return
+    endif
   endif
 
   let action = exists('a:1') ? a:1 : input('TxSend> ')
