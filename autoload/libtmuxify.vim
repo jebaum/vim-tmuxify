@@ -83,8 +83,7 @@ function! libtmuxify#pane_create(...) abort
   call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
   let b:tmuxified = 1
 
-  let ret = split(system("tmux list-panes -F '#P #D' | awk '$2 > max { max=$2; ret=$1 } END { print max, ret + 0 }' | cut -b2-"), ' ')
-  let [ b:pane_id, b:pane_num ] = [ str2nr(ret[0]), str2nr(ret[1]) ]
+  let [ b:pane_id, b:pane_num ] = map(split(system("tmux list-panes -F '#D #P' | cut -b2- | awk '$1 > id { id=$1; num=$2 } END { print id, num }'"), ' '), 'str2nr(v:val)')
 
   if exists('a:1')
     call libtmuxify#pane_send(a:1)
