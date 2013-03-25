@@ -50,14 +50,6 @@ function! s:complete_panes(...) abort
   return system('tmux list-panes -F "#P" -t '. b:session .':'. b:window)
 endfunction
 
-" s:setup_exit_handler() {{{1
-function! s:setup_exit_handler()
-  augroup tmuxify
-    autocmd!
-    autocmd VimLeave * call libtmuxify#pane_kill()
-  augroup END
-endfunction
-
 " s:get_pane_num_from_id() {{{1
 function! s:get_pane_num_from_id(pane_id) abort
   let pane_num = system("tmux list-panes -F '#D #P' | awk 'substr($1, 2) == ". a:pane_id ." { print $2 }'")
@@ -84,8 +76,6 @@ function! libtmuxify#pane_create(...) abort
     call libtmuxify#pane_send(a:1)
   endif
 
-  call <SID>setup_exit_handler()
-
   return 1
 endfunction
 
@@ -104,9 +94,6 @@ function! libtmuxify#pane_kill() abort
   endif
 
   unlet b:pane_id b:pane_num
-
-  autocmd! tmuxify VimLeave *
-  augroup! tmuxify
 endfunction
 
 " libtmuxify#pane_set() {{{1
@@ -129,12 +116,8 @@ function! libtmuxify#pane_set() abort
     redraw | echomsg 'tmuxify: There is no pane '. b:pane_num .'!'
     return
   endif
-
-
-  call <SID>setup_exit_handler()
 endfunction
 
-" vim: et sw=2 sts=2 tw=80
 " libtmuxify#pane_run() {{{1
 function! libtmuxify#pane_run(...) abort
   if !exists('b:pane_id') && !libtmuxify#pane_create()
@@ -199,3 +182,5 @@ function! libtmuxify#set_run_command_for_filetype(...) abort
   let ft = !empty(&ft) ? &ft : ' '
   let g:tmuxify_run[ft] = exists('a:1') ? a:1 : input('TxSet('. ft .')> ')
 endfunction
+
+" vim: et sw=2 sts=2 tw=80
