@@ -37,17 +37,17 @@ endfun
 
 " s:complete_sessions() {{{1
 function! s:complete_sessions(...) abort
-  return system('tmux list-sessions | cut -d: -f1')
+  return system('tmux list-sessions -F "#S"')
 endfunction
 
 " s:complete_windows() {{{1
 function! s:complete_windows(...) abort
-  return system('tmux list-windows -t '. b:session .' | cut -d: -f1')
+  return system('tmux list-windows -F "#I" -t '. b:session)
 endfunction
 
 " s:complete_panes() {{{1
 function! s:complete_panes(...) abort
-  return system('tmux list-panes -t '. b:session .':'. b:window .' | cut -d: -f1')
+  return system('tmux list-panes -F "#P" -t '. b:session .':'. b:window)
 endfunction
 
 " s:setup_exit_handler() {{{1
@@ -60,7 +60,7 @@ endfunction
 
 " s:get_pane_num_from_id() {{{1
 function! s:get_pane_num_from_id(pane_id) abort
-  let pane_num = system("tmux list-panes -F '#D #P' | cut -b2- | awk '$1 == ". a:pane_id ." { print $2 }'")
+  let pane_num = system("tmux list-panes -F '#D #P' | awk 'substr($1, 2) == ". a:pane_id ." { print $2 }'")
   return empty(pane_num) ? '' : str2nr(pane_num)
 endfunction
 
