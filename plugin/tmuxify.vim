@@ -16,7 +16,7 @@ command! -nargs=0 -bar TxSigInt    call libtmuxify#pane_send_sigint()
 command! -nargs=? -bar TxCreate    call libtmuxify#pane_create(<args>)
 command! -nargs=? -bar TxRun       call libtmuxify#pane_run(<args>)
 command! -nargs=? -bar TxSend      call libtmuxify#pane_send(<args>)
-command! -nargs=? -bar TxSetRunCmd call libtmuxify#run_set_command_for_filetype(<args>)
+command! -nargs=? -bar TxSetRunCmd call libtmuxify#set_run_command_for_filetype(<args>)
 
 " mappings {{{1
 nnoremap <silent> <leader>mb :TxSigInt<cr>

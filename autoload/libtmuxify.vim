@@ -30,29 +30,27 @@ if exists('g:loaded_libtmuxify') || &cp || !executable('awk')
 endif
 let g:loaded_libtmuxify = 1
 
-let b:tmuxified = 0
-
-" SID() {{{1
+" s:SID() {{{1
 function s:SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfun
 
-" complete_sessions() {{{1
+" s:complete_sessions() {{{1
 function! s:complete_sessions(...) abort
   return system('tmux list-sessions | cut -d: -f1')
 endfunction
 
-" complete_windows() {{{1
+" s:complete_windows() {{{1
 function! s:complete_windows(...) abort
-  return system('tmux list-windows -t '. b:sessions .' | cut -d: -f1')
+  return system('tmux list-windows -t '. b:session .' | cut -d: -f1')
 endfunction
 
-" complete_panes() {{{1
+" s:complete_panes() {{{1
 function! s:complete_panes(...) abort
-  return system('tmux list-panes -t '. b:sessions .':'. b:windows .' | cut -d: -f1')
+  return system('tmux list-panes -t '. b:session .':'. b:window .' | cut -d: -f1')
 endfunction
 
-" setup_exit_handler() {{{1
+" s:setup_exit_handler() {{{1
 function! s:setup_exit_handler()
   augroup tmuxify
     autocmd!
@@ -60,61 +58,86 @@ function! s:setup_exit_handler()
   augroup END
 endfunction
 
-" pane_get_id() {{{1
-function! s:pane_get_id(pane_num) abort
-  let pane_id = system("tmux list-panes -F '#P #D' | awk '$1 == ". a:pane_num ." { print $2 }' | cut -b2-")
-  if shell_error
-    echo 'tmuxify: s:pane_get_id() failed!'
-    return
-  endif
-  return str2nr(pane_id)
+" s:get_pane_num_from_id() {{{1
+function! s:get_pane_num_from_id(pane_id) abort
+  let pane_num = system("tmux list-panes -F '#D #P' | cut -b2- | awk '$1 == ". a:pane_id ." { print $2 }'")
+  return empty(pane_num) ? '' : str2nr(pane_num)
+  "echomsg 'tmuxify: Pane with ID '. b:pane_id .' does not exist! Run :TxCreate.'
 endfunction
 
-" pane_create() {{{1
+" libtmuxify#pane_create() {{{1
 function! libtmuxify#pane_create(...) abort
   if !exists('$TMUX')
-    echo 'tmuxify: This Vim is not running in a tmux session!'
-    return -1
-  elseif b:tmuxified
-    echo "tmuxify: I'm already associated with pane ". b:pane_num .'!'
-    return -1
+    echomsg 'tmuxify: This Vim is not running in a tmux session!'
+    return
+  elseif exists('b:pane_id')
+    let pane_num = s:get_pane_num_from_id(b:pane_id)
+    if !empty(pane_num)
+      echomsg "tmuxify: I'm already associated with pane ". pane_num .'!'
+      return
+    endif
   endif
 
   call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
-  let b:tmuxified = 1
-
-  let [ b:pane_id, b:pane_num ] = map(split(system("tmux list-panes -F '#D #P' | cut -b2- | awk '$1 > id { id=$1; num=$2 } END { print id, num }'"), ' '), 'str2nr(v:val)')
+  let [ b:pane_id, b:pane_num ] = map(split(system("tmux list-panes -F '#D #P' | awk '$1 > id { id=$1; num=$2 } END { print substr(id, 2), num }'"), ' '), 'str2nr(v:val)')
 
   if exists('a:1')
     call libtmuxify#pane_send(a:1)
   endif
 
   call <SID>setup_exit_handler()
+
+  return 1
 endfunction
 
-" pane_kill() {{{1
+" libtmuxify#pane_kill() {{{1
 function! libtmuxify#pane_kill() abort
-  if b:tmuxified == 0
-    echo 'tmuxify: there is no associated pane! Run :TxCreate.'
+  if !exists('b:pane_id')
+    echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate."
     return
   endif
 
-  if b:pane_id == s:pane_get_id(b:pane_num)
-    call system('tmux kill-pane -t '. b:pane_num)
+  let pane_num = s:get_pane_num_from_id(b:pane_id)
+  if empty(pane_num)
+    echomsg 'tmuxify: The associated pane was already closed! Run :TxCreate.'
   else
-    echo 'tmuxify: the associated pane was already closed! Run :TxCreate.'
+    call system('tmux kill-pane -t '. pane_num)
   endif
 
   unlet b:pane_id b:pane_num
-  let b:tmuxified = 0
 
   autocmd! tmuxify VimLeave *
   augroup! tmuxify
 endfunction
 
-" pane_run() {{{1
+" libtmuxify#pane_set() {{{1
+function! libtmuxify#pane_set() abort
+  if !exists('$TMUX')
+    echomsg 'tmuxify: This Vim is not running in a tmux session!'
+    return
+  endif
+
+  let b:session = input('Session: ', '', 'custom,<SNR>'. s:SID() .'_complete_sessions')
+  let b:window  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
+  let b:pane    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
+
+  " TODO: support other windows/sessions
+  "let b:pane = b:session .':'.  b:window .'.'. b:pane
+
+  let b:pane_num = b:pane
+  let b:pane_id  = str2nr(system("tmux list-panes -F '#D #P' | awk '$2 == ". b:pane_num ." { print substr($1, 2) }'"))
+  if empty(b:pane_id)
+    redraw | echomsg 'tmuxify: There is no pane '. b:pane_num .'!'
+    return
+  endif
+
+  call <SID>setup_exit_handler()
+endfunction
+
+" vim: et sw=2 sts=2 tw=80
+" libtmuxify#pane_run() {{{1
 function! libtmuxify#pane_run(...) abort
-  if !b:tmuxified && (libtmuxify#pane_create() == -1)
+  if !exists('b:pane_id') && !libtmuxify#pane_create()
     return
   endif
 
@@ -131,74 +154,48 @@ function! libtmuxify#pane_run(...) abort
   if !exists('g:tmuxify_run')
     let g:tmuxify_run = {}
   endif
-  let g:tmuxify_run[ft] = action
+  let g:tmuxify_run[ft] = substitute(action, '%', resolve(expand('%:p')), '')
 
-  let action = substitute(action, '%', resolve(expand('%:p')), '')
-
-  call libtmuxify#pane_send(action)
+  call libtmuxify#pane_send(g:tmuxify_run[ft])
 endfunction
 
-" pane_send() {{{1
+" libtmuxify#pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
-  if !b:tmuxified || !exists('b:pane_id') || (b:pane_id != s:pane_get_id(b:pane_num))
-    if exists('a:1') && (a:1 == 'clear')
-      return
-    endif
-    let b:tmuxified = 0
-    if libtmuxify#pane_create() == -1
-      return
-    endif
+  if (exists('a:1') && (a:1 == 'clear')) || (!exists('b:pane_id') && !libtmuxify#pane_create())
+    return
   endif
 
-  let action = exists('a:1') ? a:1 : input('TxSend> ')
+  let pane_num = s:get_pane_num_from_id(b:pane_id)
+  if empty(pane_num)
+    echomsg 'tmuxify: The associated pane was already closed! Run :TxCreate.'
+    return
+  endif
 
-  call system('tmux send-keys -t '. b:pane_num .' '. shellescape(action) .' C-m')
+  call system('tmux send-keys -t '. pane_num .' '. shellescape(exists('a:1') ? a:1 : input('TxSend> ')) .' C-m')
 endfunction
 
-" run_set_command_for_filetype() {{{1
-function! libtmuxify#run_set_command_for_filetype(...) abort
+" libtmuxify#pane_send_sigint() {{{1
+function! libtmuxify#pane_send_sigint() abort
+  if !exists('b:pane_id')
+    echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate."
+    return
+  endif
+
+  let pane_num = s:get_pane_num_from_id(b:pane_id)
+  if empty(pane_num)
+    echomsg 'tmuxify: The associated pane was already closed! Run :TxCreate.'
+    return
+  endif
+
+  call system('tmux send-keys -t '. pane_num .' C-c')
+endfunction
+
+" libtmuxify#set_run_command_for_filetype() {{{1
+function! libtmuxify#set_run_command_for_filetype(...) abort
   if !exists('g:tmuxify_run')
     let g:tmuxify_run = {}
   endif
 
   let ft = !empty(&ft) ? &ft : ' '
-
-  if exists('a:1')
-    let g:tmuxify_run[ft] = a:1
-  else
-    let g:tmuxify_run[ft] = input('TxSet('. ft .')> ')
-  endif
+  let g:tmuxify_run[ft] = exists('a:1') ? a:1 : input('TxSet('. ft .')> ')
 endfunction
-
-" pane_send_sigint() {{{1
-function! libtmuxify#pane_send_sigint() abort
-  if !b:tmuxified
-    return
-  endif
-
-  call system('tmux send-keys -t '. b:pane_num .' C-c')
-  if shell_error
-    echo 'tmuxify: pane '. b:pane_num ." doesn't exist! Run :TxSetPane."
-    unlet b:pane_id b:pane_num
-  endif
-endfunction
-
-" pane_set() {{{1
-function! libtmuxify#pane_set() abort
-  if !exists('$TMUX')
-    echo 'tmuxify: This Vim is not running in a tmux session!'
-    return
-  endif
-
-  let b:sessions = input('Session: ', '', 'custom,<SNR>'. s:SID() .'_complete_sessions')
-  let b:windows  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
-  let b:panes    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
-
-  let b:pane_num  = b:sessions .':'.  b:windows .'.'. b:panes
-  let b:pane_id   = s:pane_get_id(b:pane_num)
-  let b:tmuxified = 1
-
-  call <SID>setup_exit_handler()
-endfunction
-
-" vim: et sw=2 sts=2 tw=80
