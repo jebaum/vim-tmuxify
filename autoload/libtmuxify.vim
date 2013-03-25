@@ -62,7 +62,6 @@ endfunction
 function! s:get_pane_num_from_id(pane_id) abort
   let pane_num = system("tmux list-panes -F '#D #P' | cut -b2- | awk '$1 == ". a:pane_id ." { print $2 }'")
   return empty(pane_num) ? '' : str2nr(pane_num)
-  "echomsg 'tmuxify: Pane with ID '. b:pane_id .' does not exist! Run :TxCreate.'
 endfunction
 
 " libtmuxify#pane_create() {{{1
