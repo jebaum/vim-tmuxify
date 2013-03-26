@@ -144,7 +144,7 @@ endfunction
 
 " libtmuxify#pane_send() {{{1
 function! libtmuxify#pane_send(...) abort
-  if (exists('a:1') && (a:1 == 'clear')) || (!exists('b:pane_id') && !libtmuxify#pane_create())
+  if !exists('b:pane_id') && !libtmuxify#pane_create()
     return
   endif
 
