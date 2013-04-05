@@ -25,10 +25,10 @@
 " ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 " POSSIBILITY OF SUCH DAMAGE.
 
-if exists('g:loaded_libtmuxify') || &cp || !executable('tmux') || !executable('awk')
+if exists('g:autoloaded_tmuxify') || &cp || !executable('tmux') || !executable('awk')
   finish
 endif
-let g:loaded_libtmuxify = 1
+let g:autoloaded_tmuxify = 1
 
 " s:SID() {{{1
 function s:SID() abort
@@ -56,8 +56,8 @@ function! s:get_pane_num_from_id(pane_id) abort
   return empty(pane_num) ? '' : str2nr(pane_num)
 endfunction
 
-" libtmuxify#pane_create() {{{1
-function! libtmuxify#pane_create(...) abort
+" tmuxify#pane_create() {{{1
+function! tmuxify#pane_create(...) abort
   if !exists('$TMUX')
     echomsg 'tmuxify: This Vim is not running in a tmux session!'
     return
@@ -73,14 +73,14 @@ function! libtmuxify#pane_create(...) abort
   let [ b:pane_id, b:pane_num ] = map(split(system("tmux list-panes -F '#D #P' | awk '$1 > id { id=$1; num=$2 } END { print substr(id, 2), num }'"), ' '), 'str2nr(v:val)')
 
   if exists('a:1')
-    call libtmuxify#pane_send(a:1)
+    call tmuxify#pane_send(a:1)
   endif
 
   return 1
 endfunction
 
-" libtmuxify#pane_kill() {{{1
-function! libtmuxify#pane_kill() abort
+" tmuxify#pane_kill() {{{1
+function! tmuxify#pane_kill() abort
   if !exists('b:pane_id')
     echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate."
     return
@@ -96,8 +96,8 @@ function! libtmuxify#pane_kill() abort
   unlet b:pane_id b:pane_num
 endfunction
 
-" libtmuxify#pane_set() {{{1
-function! libtmuxify#pane_set() abort
+" tmuxify#pane_set() {{{1
+function! tmuxify#pane_set() abort
   if !exists('$TMUX')
     echomsg 'tmuxify: This Vim is not running in a tmux session!'
     return
@@ -118,9 +118,9 @@ function! libtmuxify#pane_set() abort
   endif
 endfunction
 
-" libtmuxify#pane_run() {{{1
-function! libtmuxify#pane_run(...) abort
-  if !exists('b:pane_id') && !libtmuxify#pane_create()
+" tmuxify#pane_run() {{{1
+function! tmuxify#pane_run(...) abort
+  if !exists('b:pane_id') && !tmuxify#pane_create()
     return
   endif
 
@@ -139,12 +139,12 @@ function! libtmuxify#pane_run(...) abort
   endif
   let g:tmuxify_run[ft] = substitute(action, '%', resolve(expand('%:p')), '')
 
-  call libtmuxify#pane_send(g:tmuxify_run[ft])
+  call tmuxify#pane_send(g:tmuxify_run[ft])
 endfunction
 
-" libtmuxify#pane_send() {{{1
-function! libtmuxify#pane_send(...) abort
-  if !exists('b:pane_id') && !libtmuxify#pane_create()
+" tmuxify#pane_send() {{{1
+function! tmuxify#pane_send(...) abort
+  if !exists('b:pane_id') && !tmuxify#pane_create()
     return
   endif
 
@@ -157,8 +157,8 @@ function! libtmuxify#pane_send(...) abort
   call system('tmux send-keys -t '. pane_num .' '. shellescape(exists('a:1') ? a:1 : input('TxSend> ')) .' C-m')
 endfunction
 
-" libtmuxify#pane_send_sigint() {{{1
-function! libtmuxify#pane_send_sigint() abort
+" tmuxify#pane_send_sigint() {{{1
+function! tmuxify#pane_send_sigint() abort
   if !exists('b:pane_id')
     echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate."
     return
@@ -173,8 +173,8 @@ function! libtmuxify#pane_send_sigint() abort
   call system('tmux send-keys -t '. pane_num .' C-c')
 endfunction
 
-" libtmuxify#set_run_command_for_filetype() {{{1
-function! libtmuxify#set_run_command_for_filetype(...) abort
+" tmuxify#set_run_command_for_filetype() {{{1
+function! tmuxify#set_run_command_for_filetype(...) abort
   if !exists('g:tmuxify_run')
     let g:tmuxify_run = {}
   endif

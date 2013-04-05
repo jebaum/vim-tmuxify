@@ -9,14 +9,14 @@ let g:tmuxify_pane_split = exists('g:tmuxify_pane_split') ? g:tmuxify_pane_split
 let g:tmuxify_pane_size  = exists('g:tmuxify_pane_size')  ? g:tmuxify_pane_size  : '10'
 
 " commands {{{1
-command! -nargs=0 -bar TxClear     call libtmuxify#pane_send('clear')
-command! -nargs=0 -bar TxKill      call libtmuxify#pane_kill()
-command! -nargs=0 -bar TxSetPane   call libtmuxify#pane_set()
-command! -nargs=0 -bar TxSigInt    call libtmuxify#pane_send_sigint()
-command! -nargs=? -bar TxCreate    call libtmuxify#pane_create(<args>)
-command! -nargs=? -bar TxRun       call libtmuxify#pane_run(<args>)
-command! -nargs=? -bar TxSend      call libtmuxify#pane_send(<args>)
-command! -nargs=? -bar TxSetRunCmd call libtmuxify#set_run_command_for_filetype(<args>)
+command! -nargs=0 -bar TxClear     call tmuxify#pane_send('clear')
+command! -nargs=0 -bar TxKill      call tmuxify#pane_kill()
+command! -nargs=0 -bar TxSetPane   call tmuxify#pane_set()
+command! -nargs=0 -bar TxSigInt    call tmuxify#pane_send_sigint()
+command! -nargs=? -bar TxCreate    call tmuxify#pane_create(<args>)
+command! -nargs=? -bar TxRun       call tmuxify#pane_run(<args>)
+command! -nargs=? -bar TxSend      call tmuxify#pane_send(<args>)
+command! -nargs=? -bar TxSetRunCmd call tmuxify#set_run_command_for_filetype(<args>)
 
 " mappings {{{1
 nnoremap <silent> <leader>mb :TxSigInt<cr>
