@@ -143,7 +143,9 @@ Thank you for flying mhi airlines. Get the Vim on!
 ==============================================================================
 5. Licence                                                   *tmuxify-license*
 
-Distributed under the same terms as Vim itself (see |:help license|).
+Copyright © Marco Hinz. Distributed under the same terms as Vim itself.
+
+See |license|.
 
 
 vim: tw=78

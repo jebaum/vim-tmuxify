@@ -1,3 +1,8 @@
+" Plugin:      https://github.com/mhinz/vim-tmuxify
+" Description: Plugin for handling tmux panes like a boss.
+" Maintainer:  Marco Hinz <http://github.com/mhinz>
+" Version:     1.1
+
 if exists('g:loaded_tmuxify') || &cp
   finish
 endif
