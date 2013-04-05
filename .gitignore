@@ -2,7 +2,7 @@
 !*/
 
 !.gitignore
-!autoload/libtmuxify.vim
+!autoload/tmuxify.vim
 !doc/tmuxify.txt
 !plugin/tmuxify.vim
 !README.md
