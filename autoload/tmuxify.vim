@@ -132,7 +132,9 @@ function! tmuxify#pane_send(...) abort
     return
   endif
 
-  call system('tmux send-keys -t '. pane_num .' '. shellescape(exists('a:1') ? a:1 : input('TxSend> ')) .' C-m')
+  let action = exists('a:1') ? substitute(shellescape(a:1), '\', '', 'g') : (shellescape(input('TxSend> ')) . ' C-m')
+
+  call system('tmux send-keys -t '. pane_num .' '. action)
 endfunction
 
 " tmuxify#pane_send_sigint() {{{1

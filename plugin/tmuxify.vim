@@ -11,7 +11,7 @@ let g:loaded_tmuxify = 1
 " '-h' for horizontal split window
 " '-v' for vertical split window
 let g:tmuxify_pane_split = get(g:, 'tmuxify_pane_split', '-v')
-let g:tmuxify_pane_size  = get(g:, 'tmuxify_pane_size', '10')
+let g:tmuxify_pane_size  = get(g:, 'tmuxify_pane_size',  '10')
 
 " commands {{{1
 command! -nargs=0 -bar TxClear     call tmuxify#pane_send('clear')
@@ -33,4 +33,4 @@ nnoremap <silent> <leader>mr :TxRun<cr>
 nnoremap <silent> <leader>ms :TxSend<cr>
 nnoremap <silent> <leader>mt :TxSetRunCmd<cr>
 
-vnoremap <silent> <leader>ms "my :TxSend(@m)<cr>
+xnoremap <silent> <leader>ms "my:TxSend(@m)<cr>
