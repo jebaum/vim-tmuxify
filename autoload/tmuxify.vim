@@ -141,8 +141,8 @@ function! tmuxify#pane_send(...) abort
   endif
 endfunction
 
-" tmuxify#pane_send_sigint() {{{1
-function! tmuxify#pane_send_sigint() abort
+" tmuxify#pane_send_raw() {{{1
+function! tmuxify#pane_send_raw(cmd) abort
   if !exists('b:pane_id')
     echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate."
     return
@@ -154,7 +154,7 @@ function! tmuxify#pane_send_sigint() abort
     return
   endif
 
-  call system('tmux send-keys -t '. pane_num .' C-c')
+  call system('tmux send-keys -t '. pane_num .' '. a:cmd)
 endfunction
 
 " tmuxify#set_run_command_for_filetype() {{{1

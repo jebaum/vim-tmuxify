@@ -115,13 +115,13 @@ can use tab completion here.
 <leader>mc
 ```
 
-Executes TxClear. This is a shortcut for TxSend('clear').
+Executes TxClear. Sends ctrl+l to the associated pane.
 
 ```vim
 <leader>mb
 ```
 
-Executes TxSigInt. Sends an interrupt signal to the associated pane.
+Executes TxSigInt. Sends ctrl+c to the associated pane.
 
 ## Documentation
 

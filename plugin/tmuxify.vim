@@ -14,10 +14,10 @@ let g:tmuxify_pane_split = get(g:, 'tmuxify_pane_split', '-v')
 let g:tmuxify_pane_size  = get(g:, 'tmuxify_pane_size',  '10')
 
 " commands {{{1
-command! -nargs=0 -bar TxClear     call tmuxify#pane_send('clear')
+command! -nargs=0 -bar TxClear     call tmuxify#pane_send_raw('C-l')
 command! -nargs=0 -bar TxKill      call tmuxify#pane_kill()
 command! -nargs=0 -bar TxSetPane   call tmuxify#pane_set()
-command! -nargs=0 -bar TxSigInt    call tmuxify#pane_send_sigint()
+command! -nargs=0 -bar TxSigInt    call tmuxify#pane_send_raw('C-c')
 command! -nargs=? -bar TxCreate    call tmuxify#pane_create(<args>)
 command! -nargs=? -bar TxRun       call tmuxify#pane_run(<args>)
 command! -nargs=? -bar TxSend      call tmuxify#pane_send(<args>)
