@@ -132,9 +132,13 @@ function! tmuxify#pane_send(...) abort
     return
   endif
 
-  let action = exists('a:1') ? substitute(shellescape(a:1), '\', '', 'g') : shellescape(input('TxSend> '))
-
-  call system('tmux send-keys -t '. pane_num .' '. action .' C-m')
+  if exists('a:1')
+    for line in split(a:1, '\n')
+      call system('tmux send-keys -t '. pane_num .' -l "'. line .'" && tmux send-keys -t '. pane_num .' C-m')
+    endfor
+  else
+    call system('tmux send-keys -t '. pane_num .' '. shellescape(input('TxSend> ')) .' C-m')
+  endif
 endfunction
 
 " tmuxify#pane_send_sigint() {{{1
