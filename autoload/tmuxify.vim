@@ -134,7 +134,7 @@ function! tmuxify#pane_send(...) abort
 
   if exists('a:1')
     for line in split(a:1, '\n')
-      call system('tmux send-keys -t '. pane_num .' -l "'. line .'" && tmux send-keys -t '. pane_num .' C-m')
+      call system('tmux send-keys -t '. pane_num .' '. shellescape(line) .' C-m')
     endfor
   else
     call system('tmux send-keys -t '. pane_num .' '. shellescape(input('TxSend> ')) .' C-m')
