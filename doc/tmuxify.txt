@@ -1,4 +1,4 @@
-*tmuxify.txt*                                      Handling panes like a boss.
+*tmuxify.txt*  Handling panes like a boss.
 *tmuxify*
 
             __                                     ___
