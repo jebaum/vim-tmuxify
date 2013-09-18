@@ -167,4 +167,14 @@ function! tmuxify#set_run_command_for_filetype(...) abort
   let g:tmuxify_run[ft] = exists('a:1') ? a:1 : input('TxSet('. ft .')> ')
 endfunction
 
+" tmuxify#get_associated_pane() {{{1
+function! tmuxify#get_associated_pane() abort
+  if !exists('b:pane_id')
+    return -1
+  endif
+
+  let pane_num = s:get_pane_num_from_id(b:pane_id)
+  return empty(pane_num) ? -1 : pane_num
+endfunction
+
 " vim: et sw=2 sts=2 tw=80
