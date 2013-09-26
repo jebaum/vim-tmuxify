@@ -115,9 +115,9 @@ function! tmuxify#pane_run(...) abort
   if !exists('g:tmuxify_run')
     let g:tmuxify_run = {}
   endif
-  let g:tmuxify_run[ft] = substitute(action, '%', resolve(expand('%:p')), '')
+  let g:tmuxify_run[ft] = action
 
-  call tmuxify#pane_send(g:tmuxify_run[ft])
+  call tmuxify#pane_send(substitute(g:tmuxify_run[ft], '%', resolve(expand('%:p')), ''))
 endfunction
 
 " tmuxify#pane_send() {{{1
