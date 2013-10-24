@@ -64,6 +64,11 @@ Split either vertically or horizontally. The two possible values are therefore
 The size of the associated pane.
 
 
+    let g:tmuxify_map_prefix = '<leader>m'
+
+What to start mappings with. Set it to '' to disable mappings.
+
+
     let g:tmuxify_run = {}
 
 Set run commands for specific filetypes. '%' will be replaced by the full path
