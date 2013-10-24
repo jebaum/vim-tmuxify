@@ -54,6 +54,12 @@ let g:tmuxify_pane_size = '10'
 The size of the associated pane.
 
 ```vim
+let g:tmuxify_map_prefix = '<leader>m'
+```
+
+What to start mappings with. Set it to `''` to disable mappings.
+
+```vim
 let g:tmuxify_run = {}
 ```
 
