@@ -13,6 +13,9 @@ Features:
 - all the plugin configuration happens in one dictionary that holds filetypes as
   keys and run commands as values
 
+__NOTE__: This plugin needs tmux 1.6 with a certain patch level. You're safe
+with versions 1.7+.
+
 ## Feedback, please!
 
 If you use any of my plugins, star it on github. This is a great way of getting
