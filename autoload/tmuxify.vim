@@ -48,6 +48,9 @@ function! tmuxify#pane_create(...) abort
   endif
 
   call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
+  if v:shell_error
+    echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
+  endif
   let [ b:pane_id, b:pane_num ] = map(split(system("tmux list-panes -F '#D #P' | awk '$1 > id { id=$1; num=$2 } END { print substr(id, 2), num }'"), ' '), 'str2nr(v:val)')
 
   if exists('a:1')
@@ -135,6 +138,9 @@ function! tmuxify#pane_send(...) abort
   if exists('a:1')
     for line in split(a:1, '\n')
       call system('tmux send-keys -t '. pane_num .' -l '. shellescape(line) .' && tmux send-keys -t '. pane_num .' C-m')
+      if v:shell_error
+        echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
+      endif
     endfor
   else
     call system('tmux send-keys -t '. pane_num .' '. shellescape(input('TxSend> ')) .' C-m')
