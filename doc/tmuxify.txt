@@ -1,6 +1,5 @@
-*tmuxify.txt*  Handling panes like a boss.
+*tmuxify.txt* Handling panes like a boss.
 *tmuxify*
-
             __                                     ___
            /\ \__                            __  /'___\
            \ \ ,_\   ___ ___   __  __  __  _/\_\/\ \__/  __  __
@@ -10,147 +9,152 @@
                \/__/\/_/\/_/\/_/\/___/ \//\/_/ \/_/\/_/   `/___/> \
                                                              /\___/
                                                              \/__/
+  by Marco Hinz~
 
+  Twitter: https://twitter.com/_mhinz_
+  Github:  http://github.com/mhinz
+  IRC:     mhi^ (Freenode)
+>
+  If you use any of my plugins, please star them on github. It's a great way
+  of getting feedback and gives me the kick to put more time into their
+  development.
 
-                              Reference Manual
+  If you encounter any bugs or have feature requests, just open an issue
+  report on Github.
 
-
-==============================================================================
-CONTENTS                                                    *tmuxify-contents*
-
-    1.Intro..........................................|tmuxify-intro|
-    2.Options........................................|tmuxify-options|
-    3.Mappings.......................................|tmuxify-mappings|
-    4.About..........................................|tmuxify-author|
-    5.License........................................|tmuxify-license|
-
-
-==============================================================================
-1. Intro                                                       *tmuxify-intro*
-
-Tmuxify is a plugin for handling tmux panes:
-
-- create/kill associated panes
-
-- associate tmuxify to already existing panes
-
-- send visually highlighted lines to the associated pane
-
-- send to pane by prompting for input
-
-- send to pane by setting a run command for the current filetype
-
-- once set, run commands are remembered, but can easily be reset
-
-- all the plugin configuration happens in one dictionary that holds filetypes
-  as keys and run commands as values
-
+  Thank you for flying mhi^ airlines. Get the Vim on!
 
 ==============================================================================
-2. Options                                                   *tmuxify-options*
+TOC                                                           *tmuxify-contents*
+
+         INTRO .......................... |tmuxify-intro|
+         OPTIONS ........................ |tmuxify-options|
+         MAPPINGS ....................... |tmuxify-mappings|
+
+==============================================================================
+INTRO                                                            *tmuxify-intro*
+
+tmuxify is a plugin for handling tmux panes:
+
+  - create/kill associated panes
+
+  - associate tmuxify to already existing panes
+
+  - send visually highlighted lines to the associated pane
+
+  - send to pane by prompting for input
+
+  - send to pane by setting a run command for the current filetype
+
+  - once set, run commands are remembered, but can easily be reset
+
+  - all the plugin configuration happens in one dictionary that holds
+    filetypes as keys and run commands as values
+
+==============================================================================
+OPTIONS                                                        *tmuxify-options*
 
 Put these variables into your vimrc for great enjoyment. The shown examples
 are also the default values.
 
+------------------------------------------------------------------------------
+>
+    let g:tmuxify_custom_command = 'tmux split-window -d'
+<
+Use this option if you want to overwrite that default command for creating a
+new pane.
 
-    let g:tmuxify_pane_split = '-v'
+Examples:~
 
-Split either vertically or horizontally. The two possible values are therefore
-'-v' and '-h'.
-
-
-    let g:tmuxify_pane_size = '10'
-
-The size of the associated pane.
-
-
+Horizontal split / height is 20% of screen size:
+>
+    let g:tmuxify_custom_command = 'tmux split-window -p 20'
+<
+Horizontal split / don't switch to pane / height of 10 lines:
+>
+    let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
+<
+Vertical split / width of 20 columns:
+>
+    let g:tmuxify_custom_command = 'tmux split-window -v -l 20'
+<
+------------------------------------------------------------------------------
+>
     let g:tmuxify_map_prefix = '<leader>m'
-
+<
 What to start mappings with. Set it to '' to disable mappings.
 
-
+------------------------------------------------------------------------------
+>
     let g:tmuxify_run = {}
-
+<
 Set run commands for specific filetypes. '%' will be replaced by the full path
 to the current buffer.
 
-Example:
-
+Example:~
+>
     let g:tmuxify_run = {
         \ 'sh': 'bash %',
         \ 'go': 'go build %',
         \}
-
-
+<
 ==============================================================================
-3. Mappings                                                 *tmuxify-mappings*
+MAPPINGS                                                      *tmuxify-mappings*
 
-These are all normal mode mappings.
+This plugin comes with a bunch for normal mode mappings.
 
-
+------------------------------------------------------------------------------
+>
     <leader>mn
+<
+Executes :TxCreate. Creates a new pane and associates with it.
 
-Executes TxCreate. Creates a new pane and associates with it.
-
-
+------------------------------------------------------------------------------
+>
     <leader>mq
+<
+Executes :TxKill. Closes the associated pane.
 
-Executes TxKill. Closes the associated pane.
-
-
+------------------------------------------------------------------------------
+>
     <leader>ms
-
-Executes TxSend. Prompts for input and sends it to the associated pane. This
+<
+Executes :TxSend. Prompts for input and sends it to the associated pane. This
 mapping also works on visual selections.
 
-
+------------------------------------------------------------------------------
+>
     <leader>mr
-
-Executes TxRun. Prompts for input if there is no entry in g:tmuxify_run for
+<
+Executes :TxRun. Prompts for input if there is no entry in g:tmuxify_run for
 the current filetype. '%' will be replaced by the full path to the current
 buffer.
 
-
+------------------------------------------------------------------------------
+>
     <leader>mt
+<
+Executes :TxSetRunCmd. Change the run command for the current filetype.
 
-Executes TxSetRunCmd. Change the run command for the current filetype.
-
-
+------------------------------------------------------------------------------
+>
     <leader>mp
+<
+Executes :TxSetPane. Associate an already existing pane with tmuxify.
 
-Executes TxSetPane. Associate an already existing pane with tmuxify. Note: You
-can use tab completion here.
+NOTE: You can use tab completion here.
 
-
+------------------------------------------------------------------------------
+>
     <leader>mc
+<
+Executes :TxClear. Sends ctrl+l to the associated pane.
 
-Executes TxClear. Sends ctrl+l to the associated pane.
-
-
+------------------------------------------------------------------------------
+>
     <leader>mb
-
-Executes TxSigInt. Sends ctrl+c to the associated pane.
-
-
-==============================================================================
-4. About the author                                           *tmuxify-author*
-
-You can usually find him as mhi^ in #vim on irc.freenode.org.
-
-For latest developments: https://github.com/mhinz
-
-If you use any of my plugins, star it on github. This is a great way of
-getting feedback! Same for issues or feature requests.
-
-Thank you for flying mhi airlines. Get the Vim on!
-
+<
+Executes :TxSigInt. Sends ctrl+c to the associated pane.
 
 ==============================================================================
-5. Licence                                                   *tmuxify-license*
-
-Copyright © Marco Hinz. Distributed under the same terms as Vim itself.
-
-See |license|.
-
-
 vim: tw=78

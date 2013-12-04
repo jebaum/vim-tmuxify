@@ -44,17 +44,13 @@ Put these variables into your vimrc for great enjoyment. The shown examples
 are also the default values.
 
 ```vim
-let g:tmuxify_pane_split = '-v'
+let g:tmuxify_custom_command = 'tmux split-window -d'
 ```
 
-Split either vertically or horizontally. The two possible values are therefore
-'-v' and '-h'.
+Use this option if you want to overwrite that default command for creating a new
+pane.
 
-```vim
-let g:tmuxify_pane_size = '10'
-```
-
-The size of the associated pane.
+_(Examples are given in `:h tmuxify-options`)_
 
 ```vim
 let g:tmuxify_map_prefix = '<leader>m'

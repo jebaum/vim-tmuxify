@@ -3,10 +3,13 @@
 " Maintainer:  Marco Hinz <http://github.com/mhinz>
 " Version:     1.1
 
-if exists('g:autoloaded_tmuxify') || &cp || !executable('tmux') || !executable('awk')
+if exists('g:autoloaded_tmuxify') || &compatible || !executable('tmux') || !executable('awk')
   finish
 endif
 let g:autoloaded_tmuxify = 1
+
+" values {{{1
+let s:cmd = get(g:, 'tmuxify_custom_command', 'tmux split-window -d')
 
 " s:SID() {{{1
 function s:SID() abort
@@ -47,7 +50,7 @@ function! tmuxify#pane_create(...) abort
     endif
   endif
 
-  call system('tmux split-window -d '. g:tmuxify_pane_split .' -l '. g:tmuxify_pane_size)
+  call system(s:cmd)
   if v:shell_error
     echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
   endif

@@ -8,12 +8,7 @@ if exists('g:loaded_tmuxify') || &cp
 endif
 let g:loaded_tmuxify = 1
 
-" '-h' for horizontal split window
-" '-v' for vertical split window
-let g:tmuxify_pane_split = get(g:, 'tmuxify_pane_split', '-v')
-let g:tmuxify_pane_size  = get(g:, 'tmuxify_pane_size',  '10')
-
-let g:tmuxify_map_prefix = get(g:, 'tmuxify_map_prefix', '<leader>m')
+let s:map_prefix = get(g:, 'tmuxify_map_prefix', '<leader>m')
 
 " commands {{{1
 command! -nargs=0 -bar TxClear     call tmuxify#pane_send_raw('C-l')
@@ -26,15 +21,15 @@ command! -nargs=? -bar TxSend      call tmuxify#pane_send(<args>)
 command! -nargs=? -bar TxSetRunCmd call tmuxify#set_run_command_for_filetype(<args>)
 
 " mappings {{{1
-if g:tmuxify_map_prefix !=# ""
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'b' ':TxSigInt<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'c' ':TxClear<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'n' ':TxCreate<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'p' ':TxSetPane<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'q' ':TxKill<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'r' ':TxRun<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'s' ':TxSend<cr>'
-  execute 'nnoremap <silent>' g:tmuxify_map_prefix.'t' ':TxSetRunCmd<cr>'
+if s:map_prefix !=# ""
+  execute 'nnoremap <silent>' s:map_prefix .'b :TxSigInt<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'c :TxClear<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'n :TxCreate<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'p :TxSetPane<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'q :TxKill<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'r :TxRun<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'s :TxSend<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'t :TxSetRunCmd<cr>'
 
-  execute 'xnoremap <silent>' g:tmuxify_map_prefix.'s' '"my:TxSend(@m)<cr>'
+  execute 'xnoremap <silent>' s:map_prefix .'s "my:TxSend(@m)<cr>'
 endif
