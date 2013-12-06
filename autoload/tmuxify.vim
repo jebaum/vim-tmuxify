@@ -8,9 +8,6 @@ if exists('g:autoloaded_tmuxify') || &compatible || !executable('tmux') || !exec
 endif
 let g:autoloaded_tmuxify = 1
 
-" values {{{1
-let s:cmd = get(g:, 'tmuxify_custom_command', 'tmux split-window -d')
-
 " s:SID() {{{1
 function s:SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
@@ -50,7 +47,7 @@ function! tmuxify#pane_create(...) abort
     endif
   endif
 
-  call system(s:cmd)
+  call system(get(g:, 'tmuxify_custom_command', 'tmux split-window -d'))
   if v:shell_error
     echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
   endif
