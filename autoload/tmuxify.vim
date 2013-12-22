@@ -137,14 +137,18 @@ function! tmuxify#pane_send(...) abort
 
   if exists('a:1')
     for line in split(a:1, '\n')
-      call system('tmux send-keys -t '. pane_num .' -l '. shellescape(line) .' && tmux send-keys -t '. pane_num .' C-m')
+      call system('tmux send-keys -t '. pane_num .' -l '. shellescape(s:fixstr(line)) .' && tmux send-keys -t '. pane_num .' C-m')
       if v:shell_error
         echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
       endif
     endfor
   else
-    call system('tmux send-keys -t '. pane_num .' '. shellescape(input('TxSend> ')) .' C-m')
+    call system('tmux send-keys -t '. pane_num .' '. shellescape(s:fixstr(input('TxSend> '))) .' C-m')
   endif
+endfunction
+
+function! s:fixstr(line)
+  return a:line[-1:] == ';' ? a:line[:-2] . '\;' : a:line
 endfunction
 
 " tmuxify#pane_send_raw() {{{1
