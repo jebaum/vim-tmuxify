@@ -92,11 +92,12 @@ function! tmuxify#pane_set() abort
   "let b:pane = b:session .':'.  b:window .'.'. b:pane
 
   let b:pane_num = b:pane
-  let b:pane_id  = str2nr(system("tmux list-panes -F '#D #P' | awk '$2 == ". b:pane ." { print substr($1, 2) }'"))
-  if empty(b:pane_id)
+  let pane_id    = system("tmux list-panes -F '#D #P' | awk '$2 == ". b:pane ." { print substr($1, 2) }'")
+  if empty(pane_id)
     redraw | echomsg 'tmuxify: There is no pane '. b:pane_num .'!'
     return
   endif
+  let b:pane_id = str2nr(pane_id)
 endfunction
 
 " tmuxify#pane_run() {{{1
