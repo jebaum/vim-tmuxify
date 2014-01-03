@@ -149,7 +149,8 @@ function! tmuxify#pane_send(...) abort
 endfunction
 
 function! s:fixstr(line)
-  return a:line[-1:] == ';' ? a:line[:-2] . '\;' : a:line
+  let line = substitute(a:line, '\t', ' ', 'g')
+  return line[-1:] == ';' ? line[:-2] . '\;' : line
 endfunction
 
 " tmuxify#pane_send_raw() {{{1
