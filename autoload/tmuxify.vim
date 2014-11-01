@@ -86,11 +86,6 @@ endfunction
 
 " tmuxify#pane_set() {{{1
 function! tmuxify#pane_set() abort
-  if !exists('$TMUX')
-    echomsg 'tmuxify: This Vim is not running in a tmux session!'
-    return
-  endif
-
   let b:session = input('Session: ', '', 'custom,<SNR>'. s:SID() .'_complete_sessions')
   let b:window  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
   let b:pane    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
