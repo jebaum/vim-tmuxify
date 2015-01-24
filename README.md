@@ -136,6 +136,8 @@ Executes TxSigInt. Sends ctrl+c to the associated pane.
 
 Marco Hinz `<mh.codebro@gmail.com>`
 
+[James Baumgarten](http://github.com/jebaum) (current maintainer)
+
 ## License
 
 Copyright © Marco Hinz. Distributed under the same terms as Vim itself. See
