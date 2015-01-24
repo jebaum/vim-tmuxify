@@ -28,6 +28,10 @@ function! s:complete_panes(...) abort
   return system('tmux list-panes -F "#P" -t '. b:session .':'. b:window)
 endfunction
 
+function! s:complete_descriptor(...) abort
+  return system('tmux list-panes -aF "#S:#I.#P"')
+endfunction
+
 " s:get_pane_descriptor_from_id() {{{1
 function! s:get_pane_descriptor_from_id(pane_id) abort
   let descriptor_list = systemlist("tmux list-panes -a -F '#D #S #I #P' | awk 'substr($1, 2) == ". a:pane_id ." { print $2, $3, $4 }'")
@@ -110,9 +114,8 @@ function! tmuxify#pane_set(bang) abort
     let scope = "g:"
   endif
 
-  let session = input('Session: ', '', 'custom,<SNR>'. s:SID() .'_complete_sessions')
-  let window  = input('Window: ',  '', 'custom,<SNR>'. s:SID() .'_complete_windows')
-  let pane    = input('Pane: ',    '', 'custom,<SNR>'. s:SID() .'_complete_panes')
+  let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
+  let [session, window, pane] = split(descriptor, '\D')
 
   execute "let " . scope . "session = session"
   execute "let " . scope . "window = window"
