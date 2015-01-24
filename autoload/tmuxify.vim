@@ -227,13 +227,20 @@ function! tmuxify#set_run_command_for_filetype(...) abort
 endfunction
 
 " tmuxify#get_associated_pane() {{{1
-function! tmuxify#get_associated_pane() abort
-  if !exists('b:pane_id')
+function! tmuxify#get_associated_pane(...) abort
+  if (a:0 == 0)
+    let scope = "b:"
+  else
+    let scope = "g:"
+  endif
+
+  if !exists(scope . 'pane_id')
     return -1
   endif
 
-  let pane_descriptor = s:get_pane_descriptor_from_id(b:pane_id)
-  return empty(pane_descriptor) ? -1 : b:pane
+  execute 'let pane_id = ' . scope . 'pane_id'
+  let pane_descriptor = s:get_pane_descriptor_from_id(pane_id)
+  return empty(pane_descriptor) ? -1 : pane_descriptor
 endfunction
 
 " vim: et sw=2 sts=2 tw=80
