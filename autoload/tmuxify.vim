@@ -35,8 +35,8 @@ function! s:get_pane_descriptor_from_id(pane_id) abort
     return ''
   else
     " there should only ever be one item in descriptor_list, since it was filtered for matching the unique pane_id
-    let [b:session, b:window, b:pane] = split(descriptor_list[0],' ')
-    return b:session . ':' . b:window . '.' . b:pane
+    let [session, window, pane] = split(descriptor_list[0],' ')
+    return session . ':' . window . '.' . pane
   endif
 endfunction
 
