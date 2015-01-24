@@ -115,7 +115,7 @@ function! tmuxify#pane_set(bang) abort
   endif
 
   let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
-  let [session, window, pane] = split(descriptor, '\D')
+  let [session, window, pane] = split(descriptor, '\W')
 
   execute "let " . scope . "session = session"
   execute "let " . scope . "window = window"
