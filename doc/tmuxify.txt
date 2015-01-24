@@ -102,6 +102,10 @@ Example:~
 MAPPINGS                                                      *tmuxify-mappings*
 
 This plugin comes with a bunch for normal mode mappings.
+NOTE: The following commands, with the exception of TxSetRunCmd, can be used
+with a bang operator (e.g., :TxCreate!) in order to work with a 'global' pane,
+which is shared among all buffers in an instance of vim. Without a bang, all
+associated tmux panes will be buffer specific.
 
 ------------------------------------------------------------------------------
 >
