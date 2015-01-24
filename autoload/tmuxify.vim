@@ -246,4 +246,27 @@ function! tmuxify#get_associated_pane(...) abort
   return empty(pane_descriptor) ? -1 : pane_descriptor
 endfunction
 
+" tmuxify#pane_command() {{{1
+function! tmuxify#pane_command(bang, ...) abort
+  if empty(a:bang)
+    let scope = "b:"
+  else
+    let scope = "g:"
+  endif
+
+  if !exists(scope . 'pane_id')
+    echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate, or check whether you're using bang commands consistently."
+    return
+  endif
+
+  execute 'let pane_id = ' scope . 'pane_id'
+  let pane_descriptor = s:get_pane_descriptor_from_id(pane_id)
+  if empty(pane_descriptor)
+    echomsg 'tmuxify: The associated pane was already closed! Run :TxCreate.'
+    return
+  endif
+
+  call system('tmux ' . a:1 . ' -t '. pane_descriptor)
+endfunction
+
 " vim: et sw=2 sts=2 tw=80
