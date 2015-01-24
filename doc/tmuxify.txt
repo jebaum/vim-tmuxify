@@ -84,6 +84,12 @@ Vertical split / width of 20 columns:
 <
 What to start mappings with. Set it to '' to disable mappings.
 
+>
+    let g:tmuxify_global_maps = 0
+<
+Whether default mappings should use global tmux panes or buffer specific ones.
+Default is 0, which uses buffer specific maps.
+
 ------------------------------------------------------------------------------
 >
     let g:tmuxify_run = {}

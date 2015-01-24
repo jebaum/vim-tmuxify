@@ -8,6 +8,7 @@ if exists('g:loaded_tmuxify') || &cp
 endif
 let g:loaded_tmuxify = 1
 
+let global = get(g:, 'tmuxify_global_maps', 0) ? '!' : ''
 let s:map_prefix = get(g:, 'tmuxify_map_prefix', '<leader>m')
 
 " commands {{{1
@@ -22,14 +23,14 @@ command! -nargs=? -bar       TxSetRunCmd call tmuxify#set_run_command_for_filety
 
 " mappings {{{1
 if s:map_prefix !=# ""
-  execute 'nnoremap <silent>' s:map_prefix .'b :TxSigInt<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'c :TxClear<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'n :TxCreate<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'p :TxSetPane<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'q :TxKill<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'r :TxRun<cr>'
-  execute 'nnoremap <silent>' s:map_prefix .'s :TxSend<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'b :TxSigInt' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'c :TxClear' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'n :TxCreate' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'p :TxSetPane' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'q :TxKill' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'r :TxRun' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'s :TxSend' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'t :TxSetRunCmd<cr>'
 
-  execute 'xnoremap <silent>' s:map_prefix .'s "my:TxSend(@m)<cr>'
+  execute 'xnoremap <silent>' s:map_prefix .'s "my:TxSend' . global . '(@m)<cr>'
 endif
