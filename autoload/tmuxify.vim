@@ -35,7 +35,7 @@ endfunction
 " s:get_pane_descriptor_from_id() {{{1
 function! s:get_pane_descriptor_from_id(pane_id) abort
   let descriptor_list = systemlist("tmux list-panes -a -F '#D #S #I #P' | awk 'substr($1, 2) == ". a:pane_id ." { print $2, $3, $4 }'")
-  if empty(descriptor_list)
+  if empty(descriptor_list) || descriptor_list[0] == 'failed to connect to server: Connection refused'
     return ''
   else
     " there should only ever be one item in descriptor_list, since it was filtered for matching the unique pane_id
