@@ -107,15 +107,21 @@ function! tmuxify#pane_kill(bang) abort
 endfunction
 
 " tmuxify#pane_set() {{{1
-function! tmuxify#pane_set(bang) abort
+function! tmuxify#pane_set(bang, ...) abort
   if empty(a:bang)
     let scope = "b:"
   else
     let scope = "g:"
   endif
 
-  let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
-  let [session, window, pane] = split(descriptor, '\W')
+  if a:0 == 3
+    let session = a:1
+    let window  = a:2
+    let pane    = a:3
+  else
+    let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
+    let [session, window, pane] = split(descriptor, '\W')
+  endif
 
   execute "let " . scope . "session = session"
   execute "let " . scope . "window = window"
