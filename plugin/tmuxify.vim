@@ -14,7 +14,7 @@ let s:map_prefix = get(g:, 'tmuxify_map_prefix', '<leader>m')
 " commands {{{1
 command! -nargs=0 -bar -bang TxClear     call tmuxify#pane_send_raw('C-l', <q-bang>)
 command! -nargs=0 -bar -bang TxKill      call tmuxify#pane_kill(<q-bang>)
-command! -nargs=0 -bar -bang TxSetPane   call tmuxify#pane_set(<q-bang>)
+command! -nargs=? -bar -bang TxSetPane   call tmuxify#pane_set(<q-bang>, <f-args>)
 command! -nargs=0 -bar -bang TxSigInt    call tmuxify#pane_send_raw('C-c', <q-bang>)
 command! -nargs=? -bar -bang TxCreate    call tmuxify#pane_create(<q-bang>, <args>)
 command! -nargs=? -bar -bang TxRun       call tmuxify#pane_run(<q-bang>, <args>)

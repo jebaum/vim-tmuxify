@@ -118,10 +118,17 @@ function! tmuxify#pane_set(bang, ...) abort
     let scope = "g:"
   endif
 
-  if a:0 == 3
-    let session = a:1
-    let window  = a:2
-    let pane    = a:3
+  if a:0 == 1
+    if a:1[0] == '%'
+      let descriptor_string = s:get_pane_descriptor_from_id(strpart(a:1, 1))
+      if descriptor_string == ''
+        echo 'tmuxify: Invalid Pane ID!'
+        return
+      endif
+      let [session, window, pane] = split(descriptor_string, '\W')
+    else
+      let [session, window, pane] = split(a:1, '\W')
+    endif
   else
     let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
     let [session, window, pane] = split(descriptor, '\W')
