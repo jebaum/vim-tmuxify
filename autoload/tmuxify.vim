@@ -221,8 +221,7 @@ function! tmuxify#pane_send_raw(cmd, bang) abort
     let scope = "g:"
   endif
 
-  if !exists(scope . 'pane_id')
-    echomsg "tmuxify: I'm not associated with any pane! Run :TxCreate, or check whether you're using bang commands consistently."
+  if !exists(scope . 'pane_id') && !tmuxify#pane_create(a:bang)
     return
   endif
 
@@ -233,7 +232,13 @@ function! tmuxify#pane_send_raw(cmd, bang) abort
     return
   endif
 
-  call system('tmux send-keys -t '. pane_descriptor .' '. a:cmd)
+  if empty(a:cmd)
+    let keys = input('TxSendKey> ')
+  else
+    let keys = a:cmd
+  endif
+
+  call system('tmux send-keys -t '. pane_descriptor .' '. keys)
 endfunction
 
 " tmuxify#set_run_command_for_filetype() {{{1

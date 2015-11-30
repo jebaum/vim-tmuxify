@@ -19,6 +19,7 @@ command! -nargs=0 -bar -bang TxSigInt    call tmuxify#pane_send_raw('C-c', <q-ba
 command! -nargs=? -bar -bang TxCreate    call tmuxify#pane_create(<q-bang>, <args>)
 command! -nargs=? -bar -bang TxRun       call tmuxify#pane_run(<q-bang>, <args>)
 command! -nargs=? -bar -bang TxSend      call tmuxify#pane_send(<q-bang>, <args>)
+command! -nargs=? -bar -bang TxSendKey   call tmuxify#pane_send_raw(<q-args>, <q-bang>)
 command! -nargs=? -bar       TxSetRunCmd call tmuxify#set_run_command_for_filetype(<args>)
 
 " mappings {{{1
@@ -30,6 +31,7 @@ if s:map_prefix !=# ""
   execute 'nnoremap <silent>' s:map_prefix .'q :TxKill' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'r :TxRun' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'s :TxSend' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'k :TxSendKey' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'t :TxSetRunCmd<cr>'
 
   execute 'xnoremap <silent>' s:map_prefix .'s "my:TxSend' . global . '(@m)<cr>'

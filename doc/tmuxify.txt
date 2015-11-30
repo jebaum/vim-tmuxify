@@ -134,6 +134,13 @@ mapping also works on visual selections.
 
 ------------------------------------------------------------------------------
 >
+    <leader>mk
+<
+Executes :TxSendKey. Prompts for input and sends it to the associated pane as
+keys.
+
+------------------------------------------------------------------------------
+>
     <leader>mr
 <
 Executes :TxRun. Prompts for input if there is no entry in g:tmuxify_run for
