@@ -238,7 +238,7 @@ function! tmuxify#pane_send_raw(cmd, bang) abort
     let keys = a:cmd
   endif
 
-  call system('tmux send-keys -t '. pane_descriptor .' '. keys)
+  call system('tmux send-keys -t '. pane_descriptor ." '". keys . "'")
 endfunction
 
 " tmuxify#set_run_command_for_filetype() {{{1
