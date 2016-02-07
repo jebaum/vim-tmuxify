@@ -99,15 +99,15 @@ mapping also works on visual selections.
 <leader>mr
 ```
 
-Executes TxSendKey. Prompts for input and sends it to the associated pane as keys.
+Executes TxRun. Prompts for input if there is no entry in g:tmuxify_run for
+the current filetype. '%' will be replaced by the full path to the current
+buffer.
 
 ```vim
 <leader>mk
 ```
 
-Executes TxRun. Prompts for input if there is no entry in g:tmuxify_run for
-the current filetype. '%' will be replaced by the full path to the current
-buffer.
+Executes TxSendKey. Prompts for input and sends it to the associated pane as keys.
 
 ```vim
 <leader>mt
