@@ -9,7 +9,7 @@ endif
 let g:autoloaded_tmuxify = 1
 
 " s:SID() {{{1
-function s:SID() abort
+function! s:SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfun
 
@@ -125,13 +125,13 @@ function! tmuxify#pane_set(bang, ...) abort
         echo 'tmuxify: Invalid Pane ID!'
         return
       endif
-      let [session, window, pane] = split(descriptor_string, '\W')
+      let [session, window, pane] = s:parsePane(descriptor_string)
     else
-      let [session, window, pane] = split(a:1, '\W')
+      let [session, window, pane] = s:parsePane(a:1)
     endif
   else
     let descriptor = input('Session:Window.Pane> ',    '', 'custom,<SNR>'. s:SID() .'_complete_descriptor')
-    let [session, window, pane] = split(descriptor, '\W')
+    let [session, window, pane] = s:parsePane(descriptor)
   endif
 
   execute "let " . scope . "session = session"
@@ -145,6 +145,12 @@ function! tmuxify#pane_set(bang, ...) abort
   endif
 
   execute "let " . scope . "pane_id = str2nr(pane_id)"
+endfunction
+
+function! s:parsePane(str) abort
+  let pat = '\v(.*):(\d+)\.(\d+)'
+  let [ignored, session, window, pane; rest] = matchlist(a:str, pat)
+  return [session, window, pane]
 endfunction
 
 " tmuxify#pane_run() {{{1
