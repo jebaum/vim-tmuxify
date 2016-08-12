@@ -9,7 +9,7 @@ endif
 let g:autoloaded_tmuxify = 1
 
 " s:SID() {{{1
-function s:SID() abort
+function! s:SID() abort
   return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfun
 
@@ -198,13 +198,13 @@ function! tmuxify#pane_send(bang, ...) abort
 
   if exists('a:1')
     for line in split(a:1, '\n')
-      call system('tmux send-keys -t '. pane_descriptor .' -l '. shellescape(s:fixstr(line)) .' && tmux send-keys -t '. pane_descriptor .' C-m')
+      call system('tmux send-keys -t '. pane_descriptor .' -l -- '. shellescape(s:fixstr(line)) .' && tmux send-keys -t '. pane_descriptor .' C-m')
       if v:shell_error
         echoerr 'tmuxify: A certain version of tmux 1.6 or higher is needed. Consider updating to 1.7+.'
       endif
     endfor
   else
-    call system('tmux send-keys -t '. pane_descriptor .' '. shellescape(s:fixstr(input('TxSend> '))) .' C-m')
+    call system('tmux send-keys -t '. pane_descriptor .' -- '. shellescape(s:fixstr(input('TxSend> '))) .' C-m')
   endif
 endfunction
 
@@ -238,7 +238,7 @@ function! tmuxify#pane_send_raw(cmd, bang) abort
     let keys = a:cmd
   endif
 
-  call system('tmux send-keys -t '. pane_descriptor ." '". keys . "'")
+  call system('tmux send-keys -t '. pane_descriptor ." -- '". keys . "'")
 endfunction
 
 " tmuxify#set_run_command_for_filetype() {{{1
