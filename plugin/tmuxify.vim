@@ -14,6 +14,7 @@ let s:map_prefix = get(g:, 'tmuxify_map_prefix', '<leader>m')
 " commands {{{1
 command! -nargs=0 -bar -bang TxClear     call tmuxify#pane_send_raw('C-l', <q-bang>)
 command! -nargs=0 -bar -bang TxKill      call tmuxify#pane_kill(<q-bang>)
+command! -nargs=0 -bar -bang TxUncopy    call tmuxify#pane_uncopy(<q-bang>)
 command! -nargs=? -bar -bang TxSetPane   call tmuxify#pane_set(<q-bang>, <f-args>)
 command! -nargs=0 -bar -bang TxSigInt    call tmuxify#pane_send_raw('C-c', <q-bang>)
 command! -nargs=? -bar -bang TxCreate    call tmuxify#pane_create(<q-bang>, <args>)
@@ -29,6 +30,7 @@ if s:map_prefix !=# ""
   execute 'nnoremap <silent>' s:map_prefix .'n :TxCreate' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'p :TxSetPane' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'q :TxKill' . global . '<cr>'
+  execute 'nnoremap <silent>' s:map_prefix .'v :TxUncopy' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'r :TxRun' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'s :TxSend' . global . '<cr>'
   execute 'nnoremap <silent>' s:map_prefix .'k :TxSendKey' . global . '<cr>'

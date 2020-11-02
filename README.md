@@ -9,6 +9,7 @@ Features:
 - send visually highlighted lines to the associated pane
 - send to pane by prompting for input
 - send to pane by setting a run command for the current filetype
+- cancel copy-mode on associated panes
 - once set, run commands are remembered, but can easily be reset
 - all the plugin configuration happens in one dictionary that holds filetypes as
   keys and run commands as values
@@ -87,6 +88,12 @@ Executes TxCreate. Creates a new pane and associates with it.
 ```
 
 Executes TxKill. Closes the associated pane.
+
+```vim
+<leader>mv
+```
+
+Executes :TxUncopy. Cancels copy mode in the associated pane.
 
 ```vim
 <leader>ms

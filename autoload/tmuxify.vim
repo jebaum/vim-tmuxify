@@ -241,6 +241,28 @@ function! tmuxify#pane_send_raw(cmd, bang) abort
   call system('tmux send-keys -t '. pane_descriptor ." '". keys . "'")
 endfunction
 
+" tmuxify#pane_uncopy() {{{1
+function! tmuxify#pane_uncopy(bang) abort
+  if empty(a:bang)
+    let scope = "b:"
+  else
+    let scope = "g:"
+  endif
+
+  if !exists(scope . 'pane_id') && !tmuxify#pane_create(a:bang)
+    return
+  endif
+
+  execute 'let pane_id = ' scope . 'pane_id'
+  let pane_descriptor = s:get_pane_descriptor_from_id(pane_id)
+  if empty(pane_descriptor)
+    echomsg 'tmuxify: The associated pane was already closed! Run :TxCreate.'
+    return
+  endif
+
+  call system('tmux send-keys -t '. pane_descriptor ." -X cancel")
+endfunction
+
 " tmuxify#set_run_command_for_filetype() {{{1
 function! tmuxify#set_run_command_for_filetype(...) abort
   if !exists('g:tmuxify_run')
