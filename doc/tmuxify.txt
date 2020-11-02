@@ -46,6 +46,8 @@ tmuxify is a plugin for handling tmux panes:
 
   - send to pane by setting a run command for the current filetype
 
+  - cancel copy-mode on associated panes
+
   - once set, run commands are remembered, but can easily be reset
 
   - all the plugin configuration happens in one dictionary that holds
@@ -124,6 +126,12 @@ Executes :TxCreate. Creates a new pane and associates with it.
     <leader>mq
 <
 Executes :TxKill. Closes the associated pane.
+
+------------------------------------------------------------------------------
+>
+    <leader>mv
+<
+Executes :TxUncopy. Cancels copy mode in the associated pane.
 
 ------------------------------------------------------------------------------
 >
